@@ -168,7 +168,7 @@ function normalizeProject(repo, meta, readme) {
   const projectSocial = isPlainObject(readme.social) ? readme.social : {};
   const recentWork = isRecentWork(repo);
   const visual = visualFor(repo.name);
-  const generatedCover = recentWork ? `/covers/${coverSlug(repo.name)}.svg` : null;
+  const generatedCover = recentWork ? `/covers/${coverSlug(repo.name)}.png` : null;
   const explicitCover = readme.cover || null;
 
   return {
@@ -187,7 +187,7 @@ function normalizeProject(repo, meta, readme) {
     secondaryColor: readme.secondaryColor || visual.secondary,
     cover: explicitCover,
     generatedCover,
-    fallbackCover: '/covers/registry-fallback.svg',
+    fallbackCover: '/covers/registry-fallback.png',
     coverStatus: explicitCover ? 'explicit' : recentWork ? 'site-color' : 'site-fallback',
     stars: repo.stargazers_count || 0,
     forks: repo.forks_count || 0,
@@ -228,8 +228,8 @@ async function main() {
     schema: {
       readmeFrontMatterDelimiter: '---',
       coverConvention: 'zaynjarvis-com owned color covers',
-      generatedCoverConvention: '/covers/{repo}.svg',
-      fallbackCover: '/covers/registry-fallback.svg',
+      generatedCoverConvention: '/covers/{repo}.png',
+      fallbackCover: '/covers/registry-fallback.png',
       recentWorkCutoff: recentWorkCutoff.toISOString(),
       fields: ['title', 'category', 'homepage', 'priority', 'summary', 'signal', 'accentColor', 'secondaryColor', 'cover', 'links', 'social', 'status'],
     },

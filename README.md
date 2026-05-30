@@ -36,17 +36,16 @@ The generated registry includes:
 - display name
 - GitHub repo
 - public homepage URL when present
-- summary and operating signal
 - GitHub stats/update time
-- site-owned color fields and local cover fallback
-- generated `/covers/{repo}.svg` for repos pushed in the last month
+- site-owned imagegen cover fallback
+- imagegen `/covers/{repo}.png` for repos pushed in the last month
 - include/optional/hidden status
 
 The repo metadata contract is documented in `docs/project-metadata.md`.
 
 ## PWA Assets
 
-`npm run assets:generate` writes project cover SVGs, the registry fallback cover, and PWA icons.
+`npm run assets:generate` verifies the checked-in imagegen PNG covers, registry fallback, favicon, and PWA icons.
 
 ## Design Review Pack
 

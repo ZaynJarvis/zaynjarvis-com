@@ -148,7 +148,6 @@ function contentType(filePath) {
     '.map': 'application/json',
     '.json': 'application/json',
     '.webmanifest': 'application/manifest+json',
-    '.svg': 'image/svg+xml',
     '.xml': 'application/xml',
     '.txt': 'text/plain',
     '.png': 'image/png',

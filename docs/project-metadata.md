@@ -34,7 +34,7 @@ status: include
 - `summary`: what the project is.
 - `signal`: why it matters in the ZaynJarvis network.
 - `accentColor` / `secondaryColor`: optional color overrides. If absent, `zaynjarvis-com` supplies project colors.
-- `cover`: optional explicit cover URL or site path. Repos do not need to carry a cover image.
+- `cover`: optional explicit PNG cover URL or site path. Repos do not need to carry a cover image.
 - `links`: optional secondary links.
 - `social`: optional project-specific social links.
 - `status`: `include`, `optional`, or `hidden`.
@@ -44,10 +44,10 @@ status: include
 Preferred cover source order:
 
 1. README front matter `cover`, only when a repo has a deliberate custom cover URL or site path.
-2. Generated local color cover under `/covers/{repo}.svg` for repos pushed since `2026-04-30`.
-3. Local fallback cover at `/covers/registry-fallback.svg`.
+2. Site-owned imagegen cover under `/covers/{repo}.png` for repos pushed since `2026-04-30`.
+3. Local imagegen fallback cover at `/covers/registry-fallback.png`.
 
-The default is intentionally site-owned: business repos are not required to add `/cover.png`, and the frontend does not fall back to GitHub Open Graph images.
+The default is intentionally site-owned: business repos are not required to carry cover images, and the frontend does not fall back to GitHub Open Graph images.
 
 ## Generated Data
 
