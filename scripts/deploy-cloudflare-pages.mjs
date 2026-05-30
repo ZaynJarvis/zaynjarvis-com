@@ -161,8 +161,6 @@ function contentType(filePath) {
 
 function collectFiles(root) {
   const ignored = new Set([
-    '_headers',
-    '_redirects',
     '_routes.json',
     '_worker.js',
     'functions',
