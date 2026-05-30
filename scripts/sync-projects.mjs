@@ -4,6 +4,7 @@ import path from 'node:path';
 
 const owner = 'ZaynJarvis';
 const generatedAt = new Date().toISOString();
+const recentWorkCutoff = new Date('2026-04-30T00:00:00.000Z');
 const outFile = path.join(process.cwd(), 'public/data/projects.json');
 const includeRepos = new Map([
   ['zouk', { priority: 100, signal: 'The operating room where agents and people coordinate real work.' }],
@@ -139,6 +140,15 @@ function fallbackCover(repo) {
   return `https://opengraph.githubassets.com/zaynjarvis-com/${owner}/${repo}`;
 }
 
+function coverSlug(repo) {
+  return repo.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+}
+
+function isRecentWork(repo) {
+  const pushed = Date.parse(repo.pushed_at || '');
+  return (pushed || 0) >= recentWorkCutoff.getTime();
+}
+
 function normalizeProject(repo, meta, readme, cover) {
   const overrides = includeRepos.get(repo.name) || {};
   const status = readme.status || overrides.status || 'include';
@@ -149,6 +159,8 @@ function normalizeProject(repo, meta, readme, cover) {
     ...(isPlainObject(readme.links) ? readme.links : {}),
   };
   const projectSocial = isPlainObject(readme.social) ? readme.social : {};
+  const recentWork = isRecentWork(repo);
+  const generatedCover = recentWork ? `/covers/${coverSlug(repo.name)}.svg` : null;
 
   return {
     slug: repo.name,
@@ -163,13 +175,17 @@ function normalizeProject(repo, meta, readme, cover) {
     summary,
     signal: readme.signal || overrides.signal || summary,
     cover: readme.cover || cover || null,
+    generatedCover,
     fallbackCover: fallbackCover(repo.name),
+    coverStatus: readme.cover || cover ? 'repo' : recentWork ? 'generated' : 'github-og',
     stars: repo.stargazers_count || 0,
     forks: repo.forks_count || 0,
     updatedAt: repo.updated_at,
     pushedAt: repo.pushed_at,
     fork: Boolean(repo.fork),
     archived: Boolean(repo.archived),
+    recentWork,
+    recentWorkCutoff: recentWorkCutoff.toISOString(),
     status,
     readmePath: meta.readmePath,
     source: Object.keys(readme).length ? 'readme' : 'github+curated',
@@ -202,6 +218,8 @@ async function main() {
     schema: {
       readmeFrontMatterDelimiter: '---',
       coverConvention: '/cover.png',
+      generatedCoverConvention: '/covers/{repo}.svg',
+      recentWorkCutoff: recentWorkCutoff.toISOString(),
       fields: ['title', 'category', 'homepage', 'priority', 'summary', 'signal', 'cover', 'links', 'social', 'status'],
     },
     projects,

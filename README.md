@@ -8,6 +8,7 @@ The site is a Vite + React app intended for Cloudflare Pages. It renders a curat
 
 ```bash
 npm install
+npm run assets:generate
 npm run sync:projects
 npm run build
 npm run preview
@@ -38,13 +39,18 @@ The generated registry includes:
 - summary and operating signal
 - GitHub stats/update time
 - `/cover.png` if present, otherwise GitHub Open Graph fallback
+- generated `/covers/{repo}.svg` for repos pushed in the last month
 - include/optional/hidden status
 
 The repo metadata contract is documented in `docs/project-metadata.md`.
 
+## PWA Assets
+
+`npm run assets:generate` writes project cover SVGs plus `icon-192.png`, `icon-512.png`, `maskable-icon-512.png`, and `apple-touch-icon.png`.
+
 ## Design Review Pack
 
-Five generated single-page directions are stored under `public/design-mocks/`:
+The selected visual direction is the editorial systems atlas style. The original five generated single-page directions remain stored under `public/design-mocks/` for reference:
 
 - `01-editorial-systems-atlas.png`
 - `02-live-operations-console.png`
@@ -52,4 +58,4 @@ Five generated single-page directions are stored under `public/design-mocks/`:
 - `04-visual-portfolio-index.png`
 - `05-protocol-registry.png`
 
-The current frontend exposes these as a review section. After design selection, the final frontend can be tightened around the chosen direction without changing the data contract.
+The production frontend no longer exposes the review grid; it uses the first direction as the base UI.

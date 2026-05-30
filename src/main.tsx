@@ -38,13 +38,17 @@ type ProjectRecord = {
   summary: string;
   signal: string;
   cover: string | null;
+  generatedCover?: string | null;
   fallbackCover: string;
+  coverStatus?: 'repo' | 'generated' | 'github-og';
   stars: number;
   forks: number;
   updatedAt: string;
   pushedAt: string;
   fork: boolean;
   archived: boolean;
+  recentWork?: boolean;
+  recentWorkCutoff?: string;
   status: 'include' | 'optional' | 'hidden';
   readmePath: string | null;
   source: string;
@@ -61,6 +65,8 @@ type ProjectData = {
     readmeFrontMatterDelimiter: string;
     coverConvention: string;
     fields: string[];
+    generatedCoverConvention?: string;
+    recentWorkCutoff?: string;
   };
   projects: ProjectRecord[];
 };
@@ -93,13 +99,17 @@ const fallbackData: ProjectData = {
       summary: 'Zouk - collaborative AI agent platform',
       signal: 'The operating room where agents and people coordinate real work.',
       cover: null,
+      generatedCover: '/covers/zouk.svg',
       fallbackCover: 'https://opengraph.githubassets.com/zaynjarvis-com/ZaynJarvis/zouk',
+      coverStatus: 'generated',
       stars: 6,
       forks: 0,
       updatedAt: '2026-05-30T10:23:58Z',
       pushedAt: '2026-05-30T10:23:54Z',
       fork: false,
       archived: false,
+      recentWork: true,
+      recentWorkCutoff: '2026-04-30T00:00:00.000Z',
       status: 'include',
       readmePath: null,
       source: 'github+curated',
@@ -169,7 +179,24 @@ function coverFor(project: ProjectRecord) {
   if (project.cover === '/cover.png') {
     return `https://raw.githubusercontent.com/${project.repo}/HEAD/cover.png`;
   }
+  if (project.cover?.startsWith('/')) return project.cover;
+  if (project.generatedCover) return project.generatedCover;
   return project.fallbackCover;
+}
+
+function hostLabel(value?: string) {
+  if (!value) return 'no public URL yet';
+  try {
+    return new URL(value).host;
+  } catch {
+    return value;
+  }
+}
+
+function coverLabel(project: ProjectRecord) {
+  if (project.coverStatus === 'repo') return 'repo cover';
+  if (project.coverStatus === 'generated') return 'recent cover';
+  return 'github fallback';
 }
 
 function Stat({ label, value }: { label: string; value: string }) {
@@ -194,14 +221,16 @@ function ProjectCard({ project }: { project: ProjectRecord }) {
         <div className="project-kicker">
           <span className="project-icon"><Icon size={18} /></span>
           {project.category}
+          {project.recentWork ? <span className="status-pill status-pill--recent">recent</span> : null}
           {project.status === 'optional' ? <span className="status-pill">optional</span> : null}
         </div>
         <h3>{project.title}</h3>
         <p>{project.summary}</p>
         <p className="project-signal">{project.signal}</p>
         <div className="project-meta">
-          <span>{project.homepage ? new URL(project.homepage).host : 'no public URL yet'}</span>
-          <span>{formatDate(project.updatedAt)}</span>
+          <span>{hostLabel(project.homepage)}</span>
+          <span>{coverLabel(project)}</span>
+          <span>{formatDate(project.pushedAt || project.updatedAt)}</span>
         </div>
         <div className="project-actions">
           {project.homepage ? (
@@ -249,50 +278,24 @@ status: include
   );
 }
 
-function DesignMocks() {
-  const mocks = [
-    ['01', 'Editorial systems atlas', '/design-mocks/01-editorial-systems-atlas.png'],
-    ['02', 'Live operations console', '/design-mocks/02-live-operations-console.png'],
-    ['03', 'Public lab notebook', '/design-mocks/03-public-lab-notebook.png'],
-    ['04', 'Visual portfolio index', '/design-mocks/04-visual-portfolio-index.png'],
-    ['05', 'Protocol registry', '/design-mocks/05-protocol-registry.png'],
-  ];
-
-  return (
-    <section className="design-mocks" aria-label="Design mockups">
-      <div className="section-heading">
-        <p className="eyebrow">Design review pack</p>
-        <h2>Five single-page directions before the final frontend polish.</h2>
-      </div>
-      <div className="mock-grid">
-        {mocks.map(([number, title, src]) => (
-          <a key={src} href={src} target="_blank" rel="noreferrer" className="mock-card">
-            <img src={src} alt={`${title} design direction`} loading="lazy" />
-            <span>{number}</span>
-            <strong>{title}</strong>
-          </a>
-        ))}
-      </div>
-    </section>
-  );
-}
-
 function App() {
   const { data, state } = useProjectData();
   const projects = data.projects.filter((project) => project.status !== 'hidden');
+  const recentProjects = projects.filter((project) => project.recentWork);
+  const archiveProjects = projects.filter((project) => !project.recentWork);
   const stars = projects.reduce((sum, repo) => sum + (repo.stars || 0), 0);
-  const included = projects.filter((project) => project.status === 'include').length;
+  const generatedCovers = projects.filter((project) => project.coverStatus === 'generated').length;
   const withHomepage = projects.filter((project) => project.homepage).length;
 
   return (
     <main>
       <section className="hero">
         <div className="hero-copy">
-          <p className="eyebrow">ZaynJarvis project registry</p>
-          <h1>Repos, domains, covers, and public artifacts.</h1>
+          <p className="eyebrow">ZaynJarvis project atlas</p>
+          <h1>ZaynJarvis</h1>
           <p className="hero-lead">
-            A homepage generated from GitHub repo data, README metadata contracts, cover images,
-            and a small curated layer for project meaning.
+            Agent runtimes, context infrastructure, creative systems, and public notes,
+            assembled from GitHub repo data and repo-owned metadata.
           </p>
           <div className="hero-actions">
             <a href="#projects">Explore projects</a>
@@ -311,8 +314,12 @@ function App() {
         </div>
         <div className="hero-panel" aria-label="Project preview collage">
           <img className="avatar" src="https://github.com/ZaynJarvis.png" alt="ZaynJarvis GitHub avatar" />
+          <div className="panel-label">
+            <span>recent covers</span>
+            <strong>{generatedCovers}</strong>
+          </div>
           <div className="preview-stack">
-            {projects.slice(0, 4).map((project) => (
+            {recentProjects.slice(0, 4).map((project) => (
               <img key={project.slug} src={coverFor(project)} alt={`${project.title} repository cover`} />
             ))}
           </div>
@@ -320,7 +327,7 @@ function App() {
       </section>
 
       <section className="stats-section" aria-label="Network status">
-        <Stat label="included project surfaces" value={String(included)} />
+        <Stat label="recent project covers" value={String(generatedCovers)} />
         <Stat label="public repos in registry" value={String(projects.length)} />
         <Stat label="cards with homepage URL" value={String(withHomepage)} />
         <Stat label="public stars loaded" value={stars.toLocaleString()} />
@@ -329,12 +336,12 @@ function App() {
       <section className="thesis">
         <div>
           <p className="eyebrow">Data source</p>
-          <h2>The homepage is now a registry, not a hand-coded card list.</h2>
+          <h2>Repo metadata decides the page. Local covers only fill recent gaps.</h2>
         </div>
         <p>
           Current load state: <strong>{state}</strong>. Source: {data.source}. Generated at {formatDate(data.generatedAt)}.
-          The scanner found no existing README metadata blocks or root covers yet, so current covers fall back to
-          GitHub Open Graph images until each repo adopts <code>/cover.png</code>.
+          The scanner reads README front matter and repo-root <code>/cover.png</code> first. For projects active since
+          {` ${formatDate(data.schema.recentWorkCutoff)}`}, the site supplies generated cover pages until the repo owns one.
         </p>
       </section>
 
@@ -342,22 +349,38 @@ function App() {
 
       <section id="projects" className="projects-section">
         <div className="section-heading">
-          <p className="eyebrow">Auto-scanned project registry</p>
-          <h2>Ranked repos, public URLs when present, and repo covers when available.</h2>
+          <p className="eyebrow">Recent work</p>
+          <h2>Projects touched in the last month get first-class cover pages.</h2>
         </div>
         <div className="project-grid">
-          {projects.map((project) => (
+          {recentProjects.map((project) => (
             <ProjectCard key={project.slug} project={project} />
           ))}
         </div>
       </section>
 
-      <DesignMocks />
+      {archiveProjects.length ? (
+        <section className="archive-section" aria-label="Archived project links">
+          <div className="section-heading">
+            <p className="eyebrow">Registry archive</p>
+            <h2>Older surfaces stay linked, but do not receive cover work in this pass.</h2>
+          </div>
+          <div className="archive-list">
+            {archiveProjects.map((project) => (
+              <a key={project.slug} href={project.homepage || project.githubUrl} target="_blank" rel="noreferrer">
+                <span>{project.title}</span>
+                <small>{project.homepage ? hostLabel(project.homepage) : project.repo}</small>
+                <ArrowUpRight size={15} />
+              </a>
+            ))}
+          </div>
+        </section>
+      ) : null}
 
       <section className="principles">
         <div className="section-heading">
-          <p className="eyebrow">Next implementation pass</p>
-          <h2>After design selection, the frontend can become sharper without changing the data contract.</h2>
+          <p className="eyebrow">Operating rule</p>
+          <h2>The site stays static, but the project data can keep moving.</h2>
         </div>
         <div className="principle-grid">
           <div>
@@ -366,7 +389,7 @@ function App() {
           </div>
           <div>
             <h3>Generated covers</h3>
-            <p>When a repo lacks <code>/cover.png</code>, generate one and commit it to that repo rather than hiding the gap.</p>
+            <p>Recent projects get local cover pages now. Repo-root <code>/cover.png</code> still wins when added later.</p>
           </div>
           <div>
             <h3>Static deployment surface</h3>

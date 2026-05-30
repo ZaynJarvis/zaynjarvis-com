@@ -45,9 +45,10 @@ Preferred cover source order:
 
 1. README front matter `cover`
 2. repo root `/cover.png`
-3. GitHub Open Graph fallback image
+3. generated local cover under `/covers/{repo}.svg` for repos pushed since `2026-04-30`
+4. GitHub Open Graph fallback image
 
-No checked repo currently has root `/cover.png` or README metadata. The current site therefore falls back to GitHub Open Graph images and curated metadata.
+No checked repo currently has root `/cover.png` or README metadata. The current site therefore uses generated cover pages for recently pushed projects and falls back to GitHub Open Graph images for older projects.
 
 ## Generated Data
 
@@ -59,6 +60,6 @@ npm run sync:projects
 
 This writes `public/data/projects.json`.
 
-Each project record includes the normalized `links` object, optional project-level `social` links, detected or fallback cover URLs, GitHub stats, and source status.
+Each project record includes the normalized `links` object, optional project-level `social` links, detected or fallback cover URLs, `recentWork`, `coverStatus`, GitHub stats, and source status.
 
 The static frontend reads this JSON first. If it fails, it falls back to the bundled minimal project list in `src/main.tsx`.

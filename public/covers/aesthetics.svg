@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" role="img" aria-label="Aesthetics project cover">
+  <defs>
+    <linearGradient id="accent" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#c2410c"/>
+      <stop offset="1" stop-color="#9333ea"/>
+    </linearGradient>
+    <pattern id="grid" width="80" height="80" patternUnits="userSpaceOnUse">
+      <path d="M80 0H0V80" fill="none" stroke="#d8dee9" stroke-width="2"/>
+    </pattern>
+  </defs>
+  <rect width="1600" height="900" fill="#f8fafc"/>
+  <rect width="1600" height="900" fill="url(#grid)" opacity="0.42"/>
+  <rect x="72" y="72" width="1456" height="756" rx="34" fill="#ffffff" stroke="#111827" stroke-width="3"/>
+  <rect x="72" y="72" width="1456" height="18" fill="url(#accent)"/>
+  <circle cx="1330" cy="256" r="148" fill="url(#accent)" opacity="0.12"/>
+  <rect x="1130" y="520" width="278" height="136" rx="22" fill="#111827"/>
+  <path d="M1180 610h176M1180 568h94M1180 652h134" stroke="#f8fafc" stroke-width="18" stroke-linecap="round"/>
+  <path d="M1374 560l62 48-62 48" fill="none" stroke="#9333ea" stroke-width="18" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="128" y="172" fill="#c2410c" font-family="'IBM Plex Mono', ui-monospace, monospace" font-size="34" font-weight="700" letter-spacing="0">VISUAL REFERENCE WORKBOOK</text>
+  <text x="128" y="356" fill="#111827" font-family="'Instrument Serif', Georgia, serif" font-size="148" font-weight="400" letter-spacing="0">Aesthetics</text>
+  <text x="132" y="470" fill="#334155" font-family="'Space Grotesk', Arial, sans-serif" font-size="48" font-weight="600" letter-spacing="0">Design styles, image prompts, and reusable taste references.</text>
+  <rect x="128" y="570" width="14" height="122" rx="7" fill="#c2410c"/>
+  <text x="174" y="620" fill="#111827" font-family="'Space Grotesk', Arial, sans-serif" font-size="42" font-weight="700" letter-spacing="0">A taste bank for product and media direction.</text>
+  <text x="174" y="686" fill="#64748b" font-family="'IBM Plex Mono', ui-monospace, monospace" font-size="30" font-weight="600" letter-spacing="0">gallery.zaynjarvis.com</text>
+  <text x="128" y="780" fill="#111827" font-family="'IBM Plex Mono', ui-monospace, monospace" font-size="28" font-weight="700" letter-spacing="0">ZAYNJARVIS.COM / PROJECT COVER</text>
+</svg>
