@@ -66,6 +66,16 @@ const covers = [
     accent: '#c2410c',
     secondary: '#9333ea',
   },
+  {
+    slug: 'registry-fallback',
+    title: 'ZaynJarvis',
+    category: 'Project registry',
+    lines: ['A local color cover for older or unillustrated project links.'],
+    signal: 'The visual fallback is owned by zaynjarvis.com.',
+    url: 'zaynjarvis.com',
+    accent: '#0f172a',
+    secondary: '#0f766e',
+  },
 ];
 
 function esc(value) {

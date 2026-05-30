@@ -1,8 +1,8 @@
 # zaynjarvis.com
 
-Static homepage for the ZaynJarvis project network.
+Static homepage for ZaynJarvis and his project network.
 
-The site is a Vite + React app intended for Cloudflare Pages. It renders a curated set of product/project surfaces and enriches each project card with public GitHub repo metadata at runtime.
+The site is a Vite + React app intended for Cloudflare Pages. It presents recent work, live project surfaces, and social links, with project data generated from public GitHub metadata.
 
 ## Local Development
 
@@ -21,7 +21,7 @@ npm run preview
 - Node version: `22`
 - Production domain: `zaynjarvis.com`
 
-The site does not require server-side credentials. Project data is generated into `public/data/projects.json` from the public GitHub API, README metadata front matter, root `/cover.png` checks, and curated fallbacks.
+The site does not require server-side credentials. Project data is generated into `public/data/projects.json` from the public GitHub API, README metadata front matter, and curated fallbacks.
 
 ## Project Data
 
@@ -38,7 +38,7 @@ The generated registry includes:
 - public homepage URL when present
 - summary and operating signal
 - GitHub stats/update time
-- `/cover.png` if present, otherwise GitHub Open Graph fallback
+- site-owned color fields and local cover fallback
 - generated `/covers/{repo}.svg` for repos pushed in the last month
 - include/optional/hidden status
 
@@ -46,7 +46,7 @@ The repo metadata contract is documented in `docs/project-metadata.md`.
 
 ## PWA Assets
 
-`npm run assets:generate` writes project cover SVGs plus `icon-192.png`, `icon-512.png`, `maskable-icon-512.png`, and `apple-touch-icon.png`.
+`npm run assets:generate` writes project cover SVGs, the registry fallback cover, and PWA icons.
 
 ## Design Review Pack
 

@@ -11,9 +11,7 @@ import {
   Github,
   Globe2,
   Image,
-  Instagram,
   Layers3,
-  MessageCircle,
   Radio,
   Sparkles,
 } from 'lucide-react';
@@ -22,7 +20,7 @@ import './styles.css';
 type SocialLink = {
   label: string;
   handle: string;
-  url: string;
+  url?: string;
 };
 
 type ProjectRecord = {
@@ -37,10 +35,12 @@ type ProjectRecord = {
   social?: Record<string, string>;
   summary: string;
   signal: string;
+  accentColor?: string;
+  secondaryColor?: string;
   cover: string | null;
   generatedCover?: string | null;
   fallbackCover: string;
-  coverStatus?: 'repo' | 'generated' | 'github-og';
+  coverStatus?: 'explicit' | 'site-color' | 'site-fallback';
   stars: number;
   forks: number;
   updatedAt: string;
@@ -66,6 +66,7 @@ type ProjectData = {
     coverConvention: string;
     fields: string[];
     generatedCoverConvention?: string;
+    fallbackCover?: string;
     recentWorkCutoff?: string;
   };
   projects: ProjectRecord[];
@@ -77,15 +78,16 @@ const fallbackData: ProjectData = {
   owner: 'ZaynJarvis',
   source: 'bundled fallback',
   social: [
-    { label: 'Instagram', handle: 'zaynjarvis', url: 'https://instagram.com/zaynjarvis' },
+    { label: 'Instagram', handle: 'zaynjarvis', url: 'https://www.instagram.com/zaynjarvis/' },
     { label: 'X', handle: 'zaynjarvis', url: 'https://x.com/zaynjarvis' },
     { label: 'GitHub', handle: 'ZaynJarvis', url: 'https://github.com/ZaynJarvis' },
-    { label: 'Discord', handle: 'zaynjarvis', url: 'https://discord.com/users/zaynjarvis' },
+    { label: 'Discord', handle: 'zaynjarvis' },
   ],
   schema: {
     readmeFrontMatterDelimiter: '---',
-    coverConvention: '/cover.png',
-    fields: ['title', 'category', 'homepage', 'priority', 'summary', 'signal', 'cover', 'links', 'social', 'status'],
+    coverConvention: 'zaynjarvis-com owned color covers',
+    fallbackCover: '/covers/registry-fallback.svg',
+    fields: ['title', 'category', 'homepage', 'priority', 'summary', 'signal', 'accentColor', 'secondaryColor', 'cover', 'links', 'social', 'status'],
   },
   projects: [
     {
@@ -98,10 +100,12 @@ const fallbackData: ProjectData = {
       githubUrl: 'https://github.com/ZaynJarvis/zouk',
       summary: 'Zouk - collaborative AI agent platform',
       signal: 'The operating room where agents and people coordinate real work.',
+      accentColor: '#0f766e',
+      secondaryColor: '#0ea5e9',
       cover: null,
       generatedCover: '/covers/zouk.svg',
-      fallbackCover: 'https://opengraph.githubassets.com/zaynjarvis-com/ZaynJarvis/zouk',
-      coverStatus: 'generated',
+      fallbackCover: '/covers/registry-fallback.svg',
+      coverStatus: 'site-color',
       stars: 6,
       forks: 0,
       updatedAt: '2026-05-30T10:23:58Z',
@@ -166,19 +170,14 @@ function formatDate(value?: string) {
   return new Intl.DateTimeFormat('en', { month: 'short', day: 'numeric', year: 'numeric' }).format(date);
 }
 
-function socialIcon(label: string) {
+function socialMark(label: string) {
   const key = label.toLowerCase();
-  if (key.includes('instagram')) return <Instagram size={16} />;
-  if (key.includes('github')) return <Github size={16} />;
-  if (key.includes('discord')) return <MessageCircle size={16} />;
-  return <AtSign size={16} />;
+  const text = key.includes('instagram') ? 'IG' : key === 'x' ? 'X' : key.includes('github') ? 'GH' : key.includes('discord') ? 'DC' : '@';
+  return <span className={`brand-mark brand-mark--${text.toLowerCase()}`} aria-hidden="true">{text}</span>;
 }
 
 function coverFor(project: ProjectRecord) {
   if (project.cover?.startsWith('http')) return project.cover;
-  if (project.cover === '/cover.png') {
-    return `https://raw.githubusercontent.com/${project.repo}/HEAD/cover.png`;
-  }
   if (project.cover?.startsWith('/')) return project.cover;
   if (project.generatedCover) return project.generatedCover;
   return project.fallbackCover;
@@ -193,12 +192,6 @@ function hostLabel(value?: string) {
   }
 }
 
-function coverLabel(project: ProjectRecord) {
-  if (project.coverStatus === 'repo') return 'repo cover';
-  if (project.coverStatus === 'generated') return 'recent cover';
-  return 'github fallback';
-}
-
 function Stat({ label, value }: { label: string; value: string }) {
   return (
     <div className="stat">
@@ -211,9 +204,13 @@ function Stat({ label, value }: { label: string; value: string }) {
 function ProjectCard({ project }: { project: ProjectRecord }) {
   const Icon = iconBySlug[project.slug] || FileJson;
   const destination = project.homepage || project.githubUrl;
+  const style = {
+    '--project-accent': project.accentColor || '#0f766e',
+    '--project-secondary': project.secondaryColor || '#2563eb',
+  } as React.CSSProperties;
 
   return (
-    <article className={`project-card project-card--${project.status}`}>
+    <article className={`project-card project-card--${project.status}`} style={style}>
       <a className="project-image" href={destination} target="_blank" rel="noreferrer" aria-label={`Open ${project.title}`}>
         <img src={coverFor(project)} alt={`${project.title} project cover`} loading="lazy" />
       </a>
@@ -229,7 +226,6 @@ function ProjectCard({ project }: { project: ProjectRecord }) {
         <p className="project-signal">{project.signal}</p>
         <div className="project-meta">
           <span>{hostLabel(project.homepage)}</span>
-          <span>{coverLabel(project)}</span>
           <span>{formatDate(project.pushedAt || project.updatedAt)}</span>
         </div>
         <div className="project-actions">
@@ -247,44 +243,12 @@ function ProjectCard({ project }: { project: ProjectRecord }) {
   );
 }
 
-function SchemaPanel({ data }: { data: ProjectData }) {
-  return (
-    <section className="schema-panel" aria-label="Project metadata contract">
-      <div>
-        <p className="eyebrow">README metadata contract</p>
-        <h2>Repo data first, curated overrides where needed.</h2>
-        <p>
-          The scanner reads public GitHub repos, checks README front matter, looks for repo-root
-          <code> /cover.png</code>, then writes <code>/data/projects.json</code>. If a repo has no
-          homepage URL, the data intentionally leaves it blank.
-        </p>
-      </div>
-      <pre>{`---
-title: Zouk
-category: Agent collaboration runtime
-homepage: https://zouk.zaynjarvis.com
-priority: 100
-summary: Shared channels, tasks, threads, activity feeds.
-signal: The operating room for human-agent work.
-cover: /cover.png
-status: include
----`}</pre>
-      <div className="schema-meta">
-        <span>schema v{data.schemaVersion}</span>
-        <span>cover: {data.schema.coverConvention}</span>
-        <span>delimiter: {data.schema.readmeFrontMatterDelimiter}</span>
-      </div>
-    </section>
-  );
-}
-
 function App() {
-  const { data, state } = useProjectData();
+  const { data } = useProjectData();
   const projects = data.projects.filter((project) => project.status !== 'hidden');
   const recentProjects = projects.filter((project) => project.recentWork);
   const archiveProjects = projects.filter((project) => !project.recentWork);
   const stars = projects.reduce((sum, repo) => sum + (repo.stars || 0), 0);
-  const generatedCovers = projects.filter((project) => project.coverStatus === 'generated').length;
   const withHomepage = projects.filter((project) => project.homepage).length;
 
   return (
@@ -294,8 +258,7 @@ function App() {
           <p className="eyebrow">ZaynJarvis project atlas</p>
           <h1>ZaynJarvis</h1>
           <p className="hero-lead">
-            Agent runtimes, context infrastructure, creative systems, and public notes,
-            assembled from GitHub repo data and repo-owned metadata.
+            Agent runtimes, memory systems, tools, and public notes.
           </p>
           <div className="hero-actions">
             <a href="#projects">Explore projects</a>
@@ -305,52 +268,53 @@ function App() {
           </div>
           <div className="social-row">
             {data.social.map((link) => (
-              <a key={link.label} href={link.url} target="_blank" rel="noreferrer" title={link.label}>
-                {socialIcon(link.label)}
-                <span>{link.handle}</span>
-              </a>
+              link.url ? (
+                <a key={link.label} href={link.url} target="_blank" rel="noreferrer" title={link.label}>
+                  {socialMark(link.label)}
+                  <span>{link.handle}</span>
+                </a>
+              ) : (
+                <span key={link.label} className="social-badge" title={link.label}>
+                  {socialMark(link.label)}
+                  <span>{link.handle}</span>
+                </span>
+              )
             ))}
           </div>
         </div>
         <div className="hero-panel" aria-label="Project preview collage">
+          <img className="hero-art" src="/og-cover.png" alt="ZaynJarvis project atlas artwork" />
           <img className="avatar" src="https://github.com/ZaynJarvis.png" alt="ZaynJarvis GitHub avatar" />
           <div className="panel-label">
-            <span>recent covers</span>
-            <strong>{generatedCovers}</strong>
-          </div>
-          <div className="preview-stack">
-            {recentProjects.slice(0, 4).map((project) => (
-              <img key={project.slug} src={coverFor(project)} alt={`${project.title} repository cover`} />
-            ))}
+            <span>recent work</span>
+            <strong>{recentProjects.length}</strong>
           </div>
         </div>
       </section>
 
       <section className="stats-section" aria-label="Network status">
-        <Stat label="recent project covers" value={String(generatedCovers)} />
-        <Stat label="public repos in registry" value={String(projects.length)} />
-        <Stat label="cards with homepage URL" value={String(withHomepage)} />
-        <Stat label="public stars loaded" value={stars.toLocaleString()} />
+        <Stat label="recent work" value={String(recentProjects.length)} />
+        <Stat label="public projects" value={String(projects.length)} />
+        <Stat label="live surfaces" value={String(withHomepage)} />
+        <Stat label="GitHub stars" value={stars.toLocaleString()} />
       </section>
 
       <section className="thesis">
         <div>
-          <p className="eyebrow">Data source</p>
-          <h2>Repo metadata decides the page. Local covers only fill recent gaps.</h2>
+          <p className="eyebrow">Current focus</p>
+          <h2>Building tools where agents, memory, media, and judgment meet.</h2>
         </div>
         <p>
-          Current load state: <strong>{state}</strong>. Source: {data.source}. Generated at {formatDate(data.generatedAt)}.
-          The scanner reads README front matter and repo-root <code>/cover.png</code> first. For projects active since
-          {` ${formatDate(data.schema.recentWorkCutoff)}`}, the site supplies generated cover pages until the repo owns one.
+          The recent work is centered on Zouk, OpenViking, Studio, OpenClaw, notes,
+          and visual systems. The older links are kept as context, but the front page
+          is about what has been moving lately.
         </p>
       </section>
-
-      <SchemaPanel data={data} />
 
       <section id="projects" className="projects-section">
         <div className="section-heading">
           <p className="eyebrow">Recent work</p>
-          <h2>Projects touched in the last month get first-class cover pages.</h2>
+          <h2>Projects I have been actively shaping this month.</h2>
         </div>
         <div className="project-grid">
           {recentProjects.map((project) => (
@@ -362,8 +326,8 @@ function App() {
       {archiveProjects.length ? (
         <section className="archive-section" aria-label="Archived project links">
           <div className="section-heading">
-            <p className="eyebrow">Registry archive</p>
-            <h2>Older surfaces stay linked, but do not receive cover work in this pass.</h2>
+            <p className="eyebrow">Earlier work</p>
+            <h2>Older public projects that still give useful context.</h2>
           </div>
           <div className="archive-list">
             {archiveProjects.map((project) => (
@@ -379,21 +343,21 @@ function App() {
 
       <section className="principles">
         <div className="section-heading">
-          <p className="eyebrow">Operating rule</p>
-          <h2>The site stays static, but the project data can keep moving.</h2>
+          <p className="eyebrow">Shape</p>
+          <h2>The work clusters around three surfaces.</h2>
         </div>
         <div className="principle-grid">
           <div>
-            <h3>Repo-owned metadata</h3>
-            <p>Each important repo should own its title, homepage, priority, summary, signal, and cover path.</p>
+            <h3>Collaboration runtime</h3>
+            <p>Zouk is the place where humans, agents, threads, tasks, and activity become one working surface.</p>
           </div>
           <div>
-            <h3>Generated covers</h3>
-            <p>Recent projects get local cover pages now. Repo-root <code>/cover.png</code> still wins when added later.</p>
+            <h3>Context infrastructure</h3>
+            <p>OpenViking treats context as recoverable runtime state, not just text stored after a chat.</p>
           </div>
           <div>
-            <h3>Static deployment surface</h3>
-            <p>Cloudflare Pages still only needs the Vite build output. No server credentials are needed for the frontend.</p>
+            <h3>Public artifacts</h3>
+            <p>Notes and visual systems turn private judgment updates into reusable public material.</p>
           </div>
         </div>
       </section>

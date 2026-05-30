@@ -51,11 +51,24 @@ const titleByRepo = {
   'Flutter-Sign-in-Button': 'Flutter Sign-in Button',
 };
 
+const visualByRepo = {
+  zouk: { accent: '#0f766e', secondary: '#0ea5e9' },
+  notes: { accent: '#b45309', secondary: '#2563eb' },
+  studio: { accent: '#7c3aed', secondary: '#db2777' },
+  OpenViking: { accent: '#047857', secondary: '#0891b2' },
+  openclaw: { accent: '#1d4ed8', secondary: '#0f766e' },
+  aesthetics: { accent: '#c2410c', secondary: '#9333ea' },
+  'night-city': { accent: '#4f46e5', secondary: '#db2777' },
+  wanman: { accent: '#c2410c', secondary: '#0891b2' },
+  'tmux-journal': { accent: '#0f172a', secondary: '#16a34a' },
+  'Flutter-Sign-in-Button': { accent: '#0284c7', secondary: '#f59e0b' },
+};
+
 const social = [
-  { label: 'Instagram', handle: 'zaynjarvis', url: 'https://instagram.com/zaynjarvis' },
+  { label: 'Instagram', handle: 'zaynjarvis', url: 'https://www.instagram.com/zaynjarvis/' },
   { label: 'X', handle: 'zaynjarvis', url: 'https://x.com/zaynjarvis' },
   { label: 'GitHub', handle: 'ZaynJarvis', url: 'https://github.com/ZaynJarvis' },
-  { label: 'Discord', handle: 'zaynjarvis', url: 'https://discord.com/users/zaynjarvis' },
+  { label: 'Discord', handle: 'zaynjarvis', url: '' },
 ];
 
 function githubHeaders() {
@@ -130,18 +143,12 @@ async function readmeMetadata(repo) {
   return { meta: parseFrontMatter(markdown), readmePath: payload.path || 'README.md' };
 }
 
-async function coverFor(repo, branch) {
-  const tree = await ghMaybe(`https://api.github.com/repos/${owner}/${repo}/contents/cover.png?ref=${branch}`);
-  if (!tree?.download_url) return null;
-  return tree.download_url;
-}
-
-function fallbackCover(repo) {
-  return `https://opengraph.githubassets.com/zaynjarvis-com/${owner}/${repo}`;
-}
-
 function coverSlug(repo) {
   return repo.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+}
+
+function visualFor(repo) {
+  return visualByRepo[repo] || { accent: '#0f766e', secondary: '#2563eb' };
 }
 
 function isRecentWork(repo) {
@@ -149,7 +156,7 @@ function isRecentWork(repo) {
   return (pushed || 0) >= recentWorkCutoff.getTime();
 }
 
-function normalizeProject(repo, meta, readme, cover) {
+function normalizeProject(repo, meta, readme) {
   const overrides = includeRepos.get(repo.name) || {};
   const status = readme.status || overrides.status || 'include';
   const homepage = readme.homepage ?? overrides.homepage ?? repo.homepage ?? '';
@@ -160,7 +167,9 @@ function normalizeProject(repo, meta, readme, cover) {
   };
   const projectSocial = isPlainObject(readme.social) ? readme.social : {};
   const recentWork = isRecentWork(repo);
+  const visual = visualFor(repo.name);
   const generatedCover = recentWork ? `/covers/${coverSlug(repo.name)}.svg` : null;
+  const explicitCover = readme.cover || null;
 
   return {
     slug: repo.name,
@@ -174,10 +183,12 @@ function normalizeProject(repo, meta, readme, cover) {
     social: projectSocial,
     summary,
     signal: readme.signal || overrides.signal || summary,
-    cover: readme.cover || cover || null,
+    accentColor: readme.accentColor || visual.accent,
+    secondaryColor: readme.secondaryColor || visual.secondary,
+    cover: explicitCover,
     generatedCover,
-    fallbackCover: fallbackCover(repo.name),
-    coverStatus: readme.cover || cover ? 'repo' : recentWork ? 'generated' : 'github-og',
+    fallbackCover: '/covers/registry-fallback.svg',
+    coverStatus: explicitCover ? 'explicit' : recentWork ? 'site-color' : 'site-fallback',
     stars: repo.stargazers_count || 0,
     forks: repo.forks_count || 0,
     updatedAt: repo.updated_at,
@@ -204,8 +215,7 @@ async function main() {
 
   for (const repo of selected) {
     const meta = await readmeMetadata(repo.name);
-    const cover = await coverFor(repo.name, repo.default_branch);
-    projects.push(normalizeProject(repo, meta, meta.meta, cover));
+    projects.push(normalizeProject(repo, meta, meta.meta));
   }
 
   projects.sort((a, b) => b.priority - a.priority || a.title.localeCompare(b.title));
@@ -213,14 +223,15 @@ async function main() {
     schemaVersion: 1,
     generatedAt,
     owner,
-    source: 'github-api + README metadata front matter + curated fallback',
+    source: 'github-api + README metadata front matter + zaynjarvis-com visual fallback',
     social,
     schema: {
       readmeFrontMatterDelimiter: '---',
-      coverConvention: '/cover.png',
+      coverConvention: 'zaynjarvis-com owned color covers',
       generatedCoverConvention: '/covers/{repo}.svg',
+      fallbackCover: '/covers/registry-fallback.svg',
       recentWorkCutoff: recentWorkCutoff.toISOString(),
-      fields: ['title', 'category', 'homepage', 'priority', 'summary', 'signal', 'cover', 'links', 'social', 'status'],
+      fields: ['title', 'category', 'homepage', 'priority', 'summary', 'signal', 'accentColor', 'secondaryColor', 'cover', 'links', 'social', 'status'],
     },
     projects,
   };
