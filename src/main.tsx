@@ -1,174 +1,175 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
-import { ArrowUpRight, BookOpen, Boxes, Cpu, Github, Globe2, Image, Layers3, Radio, Sparkles } from 'lucide-react';
+import {
+  ArrowUpRight,
+  AtSign,
+  BookOpen,
+  Boxes,
+  Cpu,
+  Database,
+  FileJson,
+  Github,
+  Globe2,
+  Image,
+  Instagram,
+  Layers3,
+  MessageCircle,
+  Radio,
+  Sparkles,
+} from 'lucide-react';
 import './styles.css';
 
-type Project = {
-  id: string;
-  name: string;
-  repo: string;
-  domain: string;
+type SocialLink = {
+  label: string;
+  handle: string;
   url: string;
+};
+
+type ProjectRecord = {
+  slug: string;
+  repo: string;
+  title: string;
   category: string;
+  priority: number;
+  homepage: string;
+  githubUrl: string;
+  links?: Record<string, string>;
+  social?: Record<string, string>;
   summary: string;
   signal: string;
-  accent: string;
-  icon: React.ComponentType<{ size?: number }>;
+  cover: string | null;
+  fallbackCover: string;
+  stars: number;
+  forks: number;
+  updatedAt: string;
+  pushedAt: string;
+  fork: boolean;
+  archived: boolean;
+  status: 'include' | 'optional' | 'hidden';
+  readmePath: string | null;
+  source: string;
+  reason: string;
 };
 
-type RepoMeta = {
-  stargazers_count?: number;
-  forks_count?: number;
-  updated_at?: string;
-  description?: string;
-  homepage?: string;
-  html_url?: string;
+type ProjectData = {
+  schemaVersion: number;
+  generatedAt: string;
+  owner: string;
+  source: string;
+  social: SocialLink[];
+  schema: {
+    readmeFrontMatterDelimiter: string;
+    coverConvention: string;
+    fields: string[];
+  };
+  projects: ProjectRecord[];
 };
 
-const owner = 'ZaynJarvis';
+const fallbackData: ProjectData = {
+  schemaVersion: 1,
+  generatedAt: '2026-05-30T11:20:00.000Z',
+  owner: 'ZaynJarvis',
+  source: 'bundled fallback',
+  social: [
+    { label: 'Instagram', handle: 'zaynjarvis', url: 'https://instagram.com/zaynjarvis' },
+    { label: 'X', handle: 'zaynjarvis', url: 'https://x.com/zaynjarvis' },
+    { label: 'GitHub', handle: 'ZaynJarvis', url: 'https://github.com/ZaynJarvis' },
+    { label: 'Discord', handle: 'zaynjarvis', url: 'https://discord.com/users/zaynjarvis' },
+  ],
+  schema: {
+    readmeFrontMatterDelimiter: '---',
+    coverConvention: '/cover.png',
+    fields: ['title', 'category', 'homepage', 'priority', 'summary', 'signal', 'cover', 'links', 'social', 'status'],
+  },
+  projects: [
+    {
+      slug: 'zouk',
+      repo: 'ZaynJarvis/zouk',
+      title: 'Zouk',
+      category: 'Agent collaboration runtime',
+      priority: 100,
+      homepage: 'https://zouk.zaynjarvis.com',
+      githubUrl: 'https://github.com/ZaynJarvis/zouk',
+      summary: 'Zouk - collaborative AI agent platform',
+      signal: 'The operating room where agents and people coordinate real work.',
+      cover: null,
+      fallbackCover: 'https://opengraph.githubassets.com/zaynjarvis-com/ZaynJarvis/zouk',
+      stars: 6,
+      forks: 0,
+      updatedAt: '2026-05-30T10:23:58Z',
+      pushedAt: '2026-05-30T10:23:54Z',
+      fork: false,
+      archived: false,
+      status: 'include',
+      readmePath: null,
+      source: 'github+curated',
+      reason: 'Active owned flagship project with live domain.',
+    },
+  ],
+};
 
-const projects: Project[] = [
-  {
-    id: 'zouk',
-    name: 'Zouk',
-    repo: 'zouk',
-    domain: 'zouk.zaynjarvis.com',
-    url: 'https://zouk.zaynjarvis.com',
-    category: 'Agent collaboration runtime',
-    summary: 'Shared channels, tasks, threads, activity feeds, and live agents for multi-agent work.',
-    signal: 'The operating room where agents and people coordinate real work.',
-    accent: '#2563eb',
-    icon: Radio,
-  },
-  {
-    id: 'notes',
-    name: 'Notes',
-    repo: 'notes',
-    domain: 'notes.zaynjarvis.com',
-    url: 'https://notes.zaynjarvis.com',
-    category: 'Public thinking system',
-    summary: 'A static notes site for mental models, agent engineering, context lifecycle, and product judgment.',
-    signal: 'Judgment updates turned into durable public artifacts.',
-    accent: '#0f766e',
-    icon: BookOpen,
-  },
-  {
-    id: 'studio',
-    name: 'Studio',
-    repo: 'studio',
-    domain: 'studio.zaynjarvis.com',
-    url: 'https://studio.zaynjarvis.com',
-    category: 'Creative production surface',
-    summary: 'A visual workflow surface for media generation, project previews, and embedded Zouk collaboration.',
-    signal: 'Where artifacts become visible enough to judge and iterate.',
-    accent: '#be123c',
-    icon: Sparkles,
-  },
-  {
-    id: 'openviking',
-    name: 'OpenViking',
-    repo: 'OpenViking',
-    domain: 'openviking.ai',
-    url: 'https://openviking.ai',
-    category: 'Context infrastructure',
-    summary: 'A context database for AI agents, organizing memory, resources, and skills through file-system semantics.',
-    signal: 'Memory plus context lifecycle, provenance, and rehydration.',
-    accent: '#4f46e5',
-    icon: Layers3,
-  },
-  {
-    id: 'openclaw',
-    name: 'OpenClaw',
-    repo: 'openclaw',
-    domain: 'openclaw.ai',
-    url: 'https://openclaw.ai',
-    category: 'Personal assistant system',
-    summary: 'An open personal AI assistant project across platforms and operating environments.',
-    signal: 'A user-facing assistant layer around local and cloud agent capability.',
-    accent: '#ca8a04',
-    icon: Cpu,
-  },
-  {
-    id: 'gallery',
-    name: 'Aesthetics Gallery',
-    repo: 'aesthetics',
-    domain: 'gallery.zaynjarvis.com',
-    url: 'https://gallery.zaynjarvis.com',
-    category: 'Visual reference workbook',
-    summary: 'Design styles, aesthetics, prompts, and image generation references for reusable visual taste.',
-    signal: 'A visual memory bank for making product and media taste inspectable.',
-    accent: '#9333ea',
-    icon: Image,
-  },
-  {
-    id: 'night-city',
-    name: 'Night City',
-    repo: 'night-city',
-    domain: 'night-city.zaynjarvis.com',
-    url: 'https://night-city.zaynjarvis.com',
-    category: 'Design-system experiment',
-    summary: 'A Cyberpunk-inspired design-system bundle with tokens, documentation, and interface examples.',
-    signal: 'A style system packaged as a reusable product surface.',
-    accent: '#16a34a',
-    icon: Boxes,
-  },
-  {
-    id: 'wanman',
-    name: 'Wanman',
-    repo: 'wanman',
-    domain: 'wanman.ai',
-    url: 'http://wanman.ai',
-    category: 'Agent matrix runtime',
-    summary: 'A runtime idea for letting humans observe while local agents coordinate workflows and artifacts.',
-    signal: 'A control-room metaphor for multi-agent delegation.',
-    accent: '#ea580c',
-    icon: Globe2,
-  },
-];
+const iconBySlug: Record<string, React.ComponentType<{ size?: number }>> = {
+  zouk: Radio,
+  notes: BookOpen,
+  studio: Sparkles,
+  OpenViking: Layers3,
+  openclaw: Cpu,
+  aesthetics: Image,
+  'night-city': Boxes,
+  wanman: Globe2,
+  'tmux-journal': Database,
+  'Flutter-Sign-in-Button': AtSign,
+};
 
-function openGraphImage(repo: string) {
-  return `https://opengraph.githubassets.com/zaynjarvis-com/${owner}/${repo}`;
-}
-
-function useRepoMeta() {
-  const [data, setData] = React.useState<Record<string, RepoMeta>>({});
+function useProjectData() {
+  const [data, setData] = React.useState<ProjectData>(fallbackData);
+  const [state, setState] = React.useState<'bundled' | 'loaded' | 'error'>('bundled');
 
   React.useEffect(() => {
     let cancelled = false;
-
     async function load() {
-      const entries = await Promise.all(
-        projects.map(async (project) => {
-          try {
-            const response = await fetch(`https://api.github.com/repos/${owner}/${project.repo}`, {
-              headers: { Accept: 'application/vnd.github+json' },
-            });
-            if (!response.ok) return [project.repo, {}] as const;
-            const json = (await response.json()) as RepoMeta;
-            return [project.repo, json] as const;
-          } catch {
-            return [project.repo, {}] as const;
-          }
-        }),
-      );
-
-      if (!cancelled) setData(Object.fromEntries(entries));
+      try {
+        const response = await fetch('/data/projects.json', { headers: { Accept: 'application/json' } });
+        if (!response.ok) throw new Error(`projects.json ${response.status}`);
+        const json = (await response.json()) as ProjectData;
+        if (!cancelled) {
+          setData(json);
+          setState('loaded');
+        }
+      } catch {
+        if (!cancelled) setState('error');
+      }
     }
-
     load();
     return () => {
       cancelled = true;
     };
   }, []);
 
-  return data;
+  return { data, state };
 }
 
 function formatDate(value?: string) {
-  if (!value) return 'curated';
+  if (!value) return 'blank';
   const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return 'curated';
+  if (Number.isNaN(date.getTime())) return 'blank';
   return new Intl.DateTimeFormat('en', { month: 'short', day: 'numeric', year: 'numeric' }).format(date);
+}
+
+function socialIcon(label: string) {
+  const key = label.toLowerCase();
+  if (key.includes('instagram')) return <Instagram size={16} />;
+  if (key.includes('github')) return <Github size={16} />;
+  if (key.includes('discord')) return <MessageCircle size={16} />;
+  return <AtSign size={16} />;
+}
+
+function coverFor(project: ProjectRecord) {
+  if (project.cover?.startsWith('http')) return project.cover;
+  if (project.cover === '/cover.png') {
+    return `https://raw.githubusercontent.com/${project.repo}/HEAD/cover.png`;
+  }
+  return project.fallbackCover;
 }
 
 function Stat({ label, value }: { label: string; value: string }) {
@@ -180,32 +181,35 @@ function Stat({ label, value }: { label: string; value: string }) {
   );
 }
 
-function ProjectCard({ project, meta }: { project: Project; meta?: RepoMeta }) {
-  const Icon = project.icon;
-  const description = meta?.description || project.summary;
+function ProjectCard({ project }: { project: ProjectRecord }) {
+  const Icon = iconBySlug[project.slug] || FileJson;
+  const destination = project.homepage || project.githubUrl;
 
   return (
-    <article className="project-card" style={{ '--accent': project.accent } as React.CSSProperties}>
-      <a className="project-image" href={project.url} target="_blank" rel="noreferrer" aria-label={`Open ${project.name}`}>
-        <img src={openGraphImage(project.repo)} alt={`${project.name} GitHub preview`} loading="lazy" />
+    <article className={`project-card project-card--${project.status}`}>
+      <a className="project-image" href={destination} target="_blank" rel="noreferrer" aria-label={`Open ${project.title}`}>
+        <img src={coverFor(project)} alt={`${project.title} project cover`} loading="lazy" />
       </a>
       <div className="project-body">
         <div className="project-kicker">
           <span className="project-icon"><Icon size={18} /></span>
           {project.category}
+          {project.status === 'optional' ? <span className="status-pill">optional</span> : null}
         </div>
-        <h3>{project.name}</h3>
-        <p>{description}</p>
+        <h3>{project.title}</h3>
+        <p>{project.summary}</p>
         <p className="project-signal">{project.signal}</p>
         <div className="project-meta">
-          <span>{project.domain}</span>
-          <span>{formatDate(meta?.updated_at)}</span>
+          <span>{project.homepage ? new URL(project.homepage).host : 'no public URL yet'}</span>
+          <span>{formatDate(project.updatedAt)}</span>
         </div>
         <div className="project-actions">
-          <a href={project.url} target="_blank" rel="noreferrer">
-            Visit <ArrowUpRight size={15} />
-          </a>
-          <a href={meta?.html_url || `https://github.com/${owner}/${project.repo}`} target="_blank" rel="noreferrer">
+          {project.homepage ? (
+            <a href={project.homepage} target="_blank" rel="noreferrer">
+              Visit <ArrowUpRight size={15} />
+            </a>
+          ) : null}
+          <a href={project.githubUrl} target="_blank" rel="noreferrer">
             Repo <Github size={15} />
           </a>
         </div>
@@ -214,20 +218,81 @@ function ProjectCard({ project, meta }: { project: Project; meta?: RepoMeta }) {
   );
 }
 
+function SchemaPanel({ data }: { data: ProjectData }) {
+  return (
+    <section className="schema-panel" aria-label="Project metadata contract">
+      <div>
+        <p className="eyebrow">README metadata contract</p>
+        <h2>Repo data first, curated overrides where needed.</h2>
+        <p>
+          The scanner reads public GitHub repos, checks README front matter, looks for repo-root
+          <code> /cover.png</code>, then writes <code>/data/projects.json</code>. If a repo has no
+          homepage URL, the data intentionally leaves it blank.
+        </p>
+      </div>
+      <pre>{`---
+title: Zouk
+category: Agent collaboration runtime
+homepage: https://zouk.zaynjarvis.com
+priority: 100
+summary: Shared channels, tasks, threads, activity feeds.
+signal: The operating room for human-agent work.
+cover: /cover.png
+status: include
+---`}</pre>
+      <div className="schema-meta">
+        <span>schema v{data.schemaVersion}</span>
+        <span>cover: {data.schema.coverConvention}</span>
+        <span>delimiter: {data.schema.readmeFrontMatterDelimiter}</span>
+      </div>
+    </section>
+  );
+}
+
+function DesignMocks() {
+  const mocks = [
+    ['01', 'Editorial systems atlas', '/design-mocks/01-editorial-systems-atlas.png'],
+    ['02', 'Live operations console', '/design-mocks/02-live-operations-console.png'],
+    ['03', 'Public lab notebook', '/design-mocks/03-public-lab-notebook.png'],
+    ['04', 'Visual portfolio index', '/design-mocks/04-visual-portfolio-index.png'],
+    ['05', 'Protocol registry', '/design-mocks/05-protocol-registry.png'],
+  ];
+
+  return (
+    <section className="design-mocks" aria-label="Design mockups">
+      <div className="section-heading">
+        <p className="eyebrow">Design review pack</p>
+        <h2>Five single-page directions before the final frontend polish.</h2>
+      </div>
+      <div className="mock-grid">
+        {mocks.map(([number, title, src]) => (
+          <a key={src} href={src} target="_blank" rel="noreferrer" className="mock-card">
+            <img src={src} alt={`${title} design direction`} loading="lazy" />
+            <span>{number}</span>
+            <strong>{title}</strong>
+          </a>
+        ))}
+      </div>
+    </section>
+  );
+}
+
 function App() {
-  const repoMeta = useRepoMeta();
-  const stars = Object.values(repoMeta).reduce((sum, repo) => sum + (repo.stargazers_count || 0), 0);
-  const activeRepos = Object.keys(repoMeta).length || projects.length;
+  const { data, state } = useProjectData();
+  const projects = data.projects.filter((project) => project.status !== 'hidden');
+  const stars = projects.reduce((sum, repo) => sum + (repo.stars || 0), 0);
+  const included = projects.filter((project) => project.status === 'include').length;
+  const withHomepage = projects.filter((project) => project.homepage).length;
 
   return (
     <main>
       <section className="hero">
         <div className="hero-copy">
-          <p className="eyebrow">ZaynJarvis project network</p>
-          <h1>Agent systems, context infrastructure, media tools, and public notes.</h1>
+          <p className="eyebrow">ZaynJarvis project registry</p>
+          <h1>Repos, domains, covers, and public artifacts.</h1>
           <p className="hero-lead">
-            A map of the projects around ZaynJarvis: collaboration runtimes, context databases,
-            creative production surfaces, visual workbooks, and the notes that compress what was learned.
+            A homepage generated from GitHub repo data, README metadata contracts, cover images,
+            and a small curated layer for project meaning.
           </p>
           <div className="hero-actions">
             <a href="#projects">Explore projects</a>
@@ -235,65 +300,77 @@ function App() {
               GitHub <Github size={16} />
             </a>
           </div>
+          <div className="social-row">
+            {data.social.map((link) => (
+              <a key={link.label} href={link.url} target="_blank" rel="noreferrer" title={link.label}>
+                {socialIcon(link.label)}
+                <span>{link.handle}</span>
+              </a>
+            ))}
+          </div>
         </div>
         <div className="hero-panel" aria-label="Project preview collage">
           <img className="avatar" src="https://github.com/ZaynJarvis.png" alt="ZaynJarvis GitHub avatar" />
           <div className="preview-stack">
             {projects.slice(0, 4).map((project) => (
-              <img key={project.id} src={openGraphImage(project.repo)} alt={`${project.name} repository preview`} />
+              <img key={project.slug} src={coverFor(project)} alt={`${project.title} repository cover`} />
             ))}
           </div>
         </div>
       </section>
 
       <section className="stats-section" aria-label="Network status">
-        <Stat label="curated project surfaces" value={String(projects.length)} />
-        <Stat label="GitHub repos loaded" value={String(activeRepos)} />
-        <Stat label="public stars loaded" value={stars ? stars.toLocaleString() : 'live'} />
-        <Stat label="deployment target" value="Cloudflare Pages" />
+        <Stat label="included project surfaces" value={String(included)} />
+        <Stat label="public repos in registry" value={String(projects.length)} />
+        <Stat label="cards with homepage URL" value={String(withHomepage)} />
+        <Stat label="public stars loaded" value={stars.toLocaleString()} />
       </section>
 
       <section className="thesis">
         <div>
-          <p className="eyebrow">Operating thesis</p>
-          <h2>The site should stay close to the source of truth.</h2>
+          <p className="eyebrow">Data source</p>
+          <h2>The homepage is now a registry, not a hand-coded card list.</h2>
         </div>
         <p>
-          Curated copy explains why each surface exists. GitHub metadata keeps the cards current enough
-          to show repo activity without rebuilding the site. Cloudflare can serve the static shell while
-          the browser enriches project cards from GitHub on load.
+          Current load state: <strong>{state}</strong>. Source: {data.source}. Generated at {formatDate(data.generatedAt)}.
+          The scanner found no existing README metadata blocks or root covers yet, so current covers fall back to
+          GitHub Open Graph images until each repo adopts <code>/cover.png</code>.
         </p>
       </section>
 
+      <SchemaPanel data={data} />
+
       <section id="projects" className="projects-section">
         <div className="section-heading">
-          <p className="eyebrow">Subdomains and product surfaces</p>
-          <h2>What is live, what it is for, and where the source lives.</h2>
+          <p className="eyebrow">Auto-scanned project registry</p>
+          <h2>Ranked repos, public URLs when present, and repo covers when available.</h2>
         </div>
         <div className="project-grid">
           {projects.map((project) => (
-            <ProjectCard key={project.id} project={project} meta={repoMeta[project.repo]} />
+            <ProjectCard key={project.slug} project={project} />
           ))}
         </div>
       </section>
 
+      <DesignMocks />
+
       <section className="principles">
         <div className="section-heading">
-          <p className="eyebrow">How this homepage should evolve</p>
-          <h2>Make the project map useful before making it decorative.</h2>
+          <p className="eyebrow">Next implementation pass</p>
+          <h2>After design selection, the frontend can become sharper without changing the data contract.</h2>
         </div>
         <div className="principle-grid">
           <div>
-            <h3>Default path as product contract</h3>
-            <p>The first screen should answer what Zayn is building, what is live, and where to inspect source.</p>
+            <h3>Repo-owned metadata</h3>
+            <p>Each important repo should own its title, homepage, priority, summary, signal, and cover path.</p>
           </div>
           <div>
-            <h3>Dynamic where it matters</h3>
-            <p>Repo activity, descriptions, stars, and links come from GitHub when available. The site still works offline from curated data.</p>
+            <h3>Generated covers</h3>
+            <p>When a repo lacks <code>/cover.png</code>, generate one and commit it to that repo rather than hiding the gap.</p>
           </div>
           <div>
             <h3>Static deployment surface</h3>
-            <p>No server is required for v1. Cloudflare Pages can build with Vite and serve the generated dist directory.</p>
+            <p>Cloudflare Pages still only needs the Vite build output. No server credentials are needed for the frontend.</p>
           </div>
         </div>
       </section>

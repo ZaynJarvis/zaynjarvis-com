@@ -8,6 +8,7 @@ The site is a Vite + React app intended for Cloudflare Pages. It renders a curat
 
 ```bash
 npm install
+npm run sync:projects
 npm run build
 npm run preview
 ```
@@ -19,16 +20,36 @@ npm run preview
 - Node version: `22`
 - Production domain: `zaynjarvis.com`
 
-The site does not require server-side credentials. GitHub metadata is fetched client-side from the public GitHub API and falls back to curated copy if the request is rate-limited or unavailable.
+The site does not require server-side credentials. Project data is generated into `public/data/projects.json` from the public GitHub API, README metadata front matter, root `/cover.png` checks, and curated fallbacks.
 
 ## Project Data
 
-Curated project data currently lives in `src/main.tsx`. Each project includes:
+Run:
+
+```bash
+npm run sync:projects
+```
+
+The generated registry includes:
 
 - display name
-- GitHub repo slug
-- public domain
+- GitHub repo
+- public homepage URL when present
 - summary and operating signal
-- GitHub Open Graph preview image
+- GitHub stats/update time
+- `/cover.png` if present, otherwise GitHub Open Graph fallback
+- include/optional/hidden status
 
-Next useful improvement: move project data into a small JSON file or GitHub-hosted registry so the homepage can be updated without touching the React component.
+The repo metadata contract is documented in `docs/project-metadata.md`.
+
+## Design Review Pack
+
+Five generated single-page directions are stored under `public/design-mocks/`:
+
+- `01-editorial-systems-atlas.png`
+- `02-live-operations-console.png`
+- `03-public-lab-notebook.png`
+- `04-visual-portfolio-index.png`
+- `05-protocol-registry.png`
+
+The current frontend exposes these as a review section. After design selection, the final frontend can be tightened around the chosen direction without changing the data contract.
