@@ -266,16 +266,15 @@ footer {
   border-radius: 8px;
   padding: 0;
   background: rgba(255, 255, 255, 0.86);
-  color: #334155;
+  color: var(--social-color, #334155);
   font-size: 0.92rem;
   font-weight: 700;
   text-decoration: none;
 }
 
 .social-row a:hover {
-  border-color: rgba(4, 120, 87, 0.35);
+  border-color: color-mix(in srgb, var(--social-color, #334155) 34%, transparent);
   background: #ffffff;
-  color: #047857;
   transform: translateY(-1px);
 }
 
@@ -283,6 +282,16 @@ footer {
   width: 19px;
   height: 19px;
   display: block;
+}
+
+.social-icon--mask {
+  background: var(--social-color, #334155);
+  mask: var(--social-icon) center / contain no-repeat;
+  -webkit-mask: var(--social-icon) center / contain no-repeat;
+}
+
+.social-icon--asset {
+  object-fit: contain;
 }
 
 .social-row .social-badge {

@@ -8,6 +8,12 @@ type SocialLink = {
   url?: string;
 };
 
+type SocialLogoSource = {
+  asset?: string;
+  color: string;
+  mode: 'image' | 'mask';
+};
+
 type ProjectRecord = {
   slug: string;
   repo: string;
@@ -154,56 +160,29 @@ function formatDate(value: string) {
   }).format(date);
 }
 
+const socialLogoSources: Record<string, SocialLogoSource> = {
+  discord: { asset: '/social/discord.svg', color: '#5865F2', mode: 'mask' },
+  github: { asset: '/social/github.svg', color: '#181717', mode: 'mask' },
+  instagram: { asset: '/social/instagram.svg', color: '#E4405F', mode: 'mask' },
+  linkedin: { asset: '/social/LI-In-Bug.png', color: '#0A66C2', mode: 'image' },
+  x: { asset: '/social/x.svg', color: '#000000', mode: 'mask' },
+};
+
 function SocialIcon({ label }: { label: string }) {
-  const key = label.toLowerCase();
+  const source = socialLogoSources[label.toLowerCase()];
+  if (!source?.asset) return null;
 
-  if (key === 'instagram') {
-    return (
-      <svg className="social-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-        <rect x="3" y="3" width="18" height="18" rx="5" fill="none" stroke="currentColor" strokeWidth="2" />
-        <circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" strokeWidth="2" />
-        <circle cx="17" cy="7" r="1.35" fill="currentColor" />
-      </svg>
-    );
+  if (source.mode === 'image') {
+    return <img className="social-icon social-icon--asset" src={source.asset} alt="" aria-hidden="true" />;
   }
 
-  if (key === 'x') {
-    return (
-      <svg className="social-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-        <path d="M4 4l16 16M20 4L4 20" fill="none" stroke="currentColor" strokeLinecap="round" strokeWidth="2.8" />
-      </svg>
-    );
-  }
-
-  if (key === 'linkedin') {
-    return (
-      <svg className="social-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-        <rect x="3" y="3" width="18" height="18" rx="3" fill="currentColor" />
-        <circle cx="8" cy="8" r="1.45" fill="#ffffff" />
-        <path d="M6.75 10.5h2.5V18h-2.5v-7.5ZM11 10.5h2.35v1.05c.45-.72 1.22-1.23 2.46-1.23 1.88 0 3.19 1.2 3.19 3.77V18h-2.5v-3.55c0-1.25-.44-1.88-1.38-1.88-.98 0-1.62.67-1.62 1.88V18H11v-7.5Z" fill="#ffffff" />
-      </svg>
-    );
-  }
-
-  if (key === 'github') {
-    return (
-      <svg className="social-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-        <path d="M12 2.75a9.25 9.25 0 0 0-2.92 18.03c.46.08.63-.2.63-.44v-1.7c-2.55.55-3.1-1.08-3.1-1.08-.42-1.06-1.02-1.35-1.02-1.35-.83-.57.07-.56.07-.56.92.06 1.41.95 1.41.95.82 1.4 2.14 1 2.66.76.08-.6.32-1 .58-1.23-2.04-.23-4.18-1.02-4.18-4.54 0-1 .36-1.82.95-2.47-.1-.23-.41-1.17.09-2.43 0 0 .77-.25 2.54.94A8.86 8.86 0 0 1 12 5.32c.78 0 1.56.1 2.29.31 1.76-1.19 2.54-.94 2.54-.94.5 1.26.18 2.2.09 2.43.59.65.95 1.47.95 2.47 0 3.53-2.15 4.3-4.2 4.53.33.29.63.85.63 1.72v2.5c0 .24.17.53.64.44A9.25 9.25 0 0 0 12 2.75Z" fill="currentColor" />
-      </svg>
-    );
-  }
-
-  if (key === 'discord') {
-    return (
-      <svg className="social-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-        <path d="M7.2 5.45A13.2 13.2 0 0 1 10.4 4.5l.38.75a12.3 12.3 0 0 1 2.44 0l.38-.75a13.2 13.2 0 0 1 3.2.95c2.04 3.03 2.6 5.98 2.33 8.88a13.3 13.3 0 0 1-4.04 2.04l-.82-1.34c.45-.17.88-.38 1.29-.63a8.38 8.38 0 0 1-7.12 0c.41.25.84.46 1.3.63l-.83 1.34a13.3 13.3 0 0 1-4.04-2.04c-.3-3.36.52-6.28 2.33-8.88Z" fill="currentColor" />
-        <circle cx="9.25" cy="11.9" r="1.25" fill="#ffffff" />
-        <circle cx="14.75" cy="11.9" r="1.25" fill="#ffffff" />
-      </svg>
-    );
-  }
-
-  return null;
+  return (
+    <span
+      className="social-icon social-icon--mask"
+      aria-hidden="true"
+      style={{ '--social-icon': `url(${source.asset})` } as React.CSSProperties}
+    />
+  );
 }
 
 function ProjectCard({ project }: { project: ProjectRecord }) {
@@ -259,6 +238,10 @@ function App() {
     '--hero-secondary': officialProject.secondaryColor || '#0891b2',
   } as React.CSSProperties;
 
+  const socialStyle = (label: string) => ({
+    '--social-color': socialLogoSources[label.toLowerCase()]?.color || '#334155',
+  }) as React.CSSProperties;
+
   return (
     <main>
       <section className="hero" style={heroStyle}>
@@ -291,11 +274,11 @@ function App() {
           <div className="social-row">
             {data.social.map((link) => (
               link.url ? (
-                <a key={link.label} href={link.url} target="_blank" rel="noreferrer" title={link.label} aria-label={link.label}>
+                <a key={link.label} href={link.url} target="_blank" rel="noreferrer" title={link.label} aria-label={link.label} style={socialStyle(link.label)}>
                   <SocialIcon label={link.label} />
                 </a>
               ) : (
-                <span key={link.label} className="social-badge" title={link.label} aria-label={link.label}>
+                <span key={link.label} className="social-badge" title={link.label} aria-label={link.label} style={socialStyle(link.label)}>
                   <SocialIcon label={link.label} />
                 </span>
               )
