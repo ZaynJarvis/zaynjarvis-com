@@ -217,7 +217,7 @@ footer {
 .hero-ledger {
   display: grid;
   max-width: 720px;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 1px;
   margin: 30px 0 0;
   border: 1px solid rgba(255, 255, 255, 0.24);
@@ -337,6 +337,25 @@ footer {
   color: #334155;
   font-size: 1.04rem;
   line-height: 1.7;
+}
+
+.official-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 20px;
+  color: #475569;
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 0.74rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.official-meta span {
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 6px 8px;
+  background: #f8fafc;
 }
 
 .official-actions {

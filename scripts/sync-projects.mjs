@@ -16,6 +16,8 @@ const includeRepos = new Map([
     summary: 'Open-source context database for AI agents: memory, resources, skills, provenance, and lifecycle control behind a viking:// filesystem.',
     signal: 'The official infrastructure project: context as an inspectable runtime contract.',
     reason: 'Current official flagship project.',
+    githubUrl: 'https://github.com/volcengine/OpenViking',
+    statsRepo: 'volcengine/OpenViking',
   }],
   ['zouk', { priority: 96, signal: 'The operating room where agents and people coordinate real work.' }],
   ['swarm-eval', {
@@ -242,13 +244,14 @@ function isRecentWork(repo) {
   return (pushed || 0) >= recentWorkCutoff.getTime();
 }
 
-function normalizeProject(repo, meta, readme) {
+function normalizeProject(repo, meta, readme, statsRepo = repo) {
   const overrides = includeRepos.get(repo.name) || {};
   const status = readme.status || overrides.status || 'include';
   const homepage = readme.homepage ?? overrides.homepage ?? repo.homepage ?? '';
+  const githubUrl = readme.githubUrl || overrides.githubUrl || repo.html_url;
   const summary = readme.summary || overrides.summary || repo.description || '';
   const links = {
-    github: repo.html_url,
+    github: githubUrl,
     ...(isPlainObject(readme.links) ? readme.links : {}),
   };
   const projectSocial = isPlainObject(readme.social) ? readme.social : {};
@@ -267,7 +270,7 @@ function normalizeProject(repo, meta, readme) {
     category: readme.category || overrides.category || categoryByRepo[repo.name] || 'Project',
     priority: Number(readme.priority || overrides.priority || 0),
     homepage,
-    githubUrl: repo.html_url,
+    githubUrl,
     links,
     social: projectSocial,
     summary,
@@ -278,8 +281,9 @@ function normalizeProject(repo, meta, readme) {
     generatedCover,
     fallbackCover: '/covers/registry-fallback.png',
     coverStatus: explicitCover ? 'explicit' : generatedCover ? 'site-color' : 'site-fallback',
-    stars: repo.stargazers_count || 0,
-    forks: repo.forks_count || 0,
+    stars: statsRepo.stargazers_count || 0,
+    forks: statsRepo.forks_count || 0,
+    starsSource: overrides.statsRepo || repo.full_name,
     updatedAt: repo.updated_at,
     pushedAt: repo.pushed_at,
     fork: Boolean(repo.fork),
@@ -304,7 +308,11 @@ async function main() {
 
   for (const repo of selected) {
     const meta = await readmeMetadata(repo.name);
-    projects.push(normalizeProject(repo, meta, meta.meta));
+    const overrides = includeRepos.get(repo.name) || {};
+    const statsRepo = overrides.statsRepo
+      ? await ghMaybe(`https://api.github.com/repos/${overrides.statsRepo}`)
+      : null;
+    projects.push(normalizeProject(repo, meta, meta.meta, statsRepo || repo));
   }
 
   projects.sort((a, b) => b.priority - a.priority || a.title.localeCompare(b.title));

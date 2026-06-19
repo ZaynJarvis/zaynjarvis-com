@@ -33,6 +33,7 @@ type ProjectRecord = {
   fallbackCover: string;
   coverStatus?: 'explicit' | 'site-color' | 'site-fallback';
   stars: number;
+  starsSource?: string;
   forks: number;
   updatedAt: string;
   pushedAt: string;
@@ -90,7 +91,7 @@ const fallbackData: ProjectData = {
       category: 'Official context infrastructure',
       priority: 120,
       homepage: 'https://openviking.ai',
-      githubUrl: 'https://github.com/ZaynJarvis/OpenViking',
+      githubUrl: 'https://github.com/volcengine/OpenViking',
       summary: 'Open-source context database for AI agents: memory, resources, skills, provenance, and lifecycle control behind a viking:// filesystem.',
       signal: 'The official infrastructure project: context as an inspectable runtime contract.',
       accentColor: '#047857',
@@ -99,7 +100,8 @@ const fallbackData: ProjectData = {
       generatedCover: '/covers/openviking.png',
       fallbackCover: '/covers/registry-fallback.png',
       coverStatus: 'site-color',
-      stars: 0,
+      stars: 25819,
+      starsSource: 'volcengine/OpenViking',
       forks: 0,
       updatedAt: '2026-06-19T03:13:17Z',
       pushedAt: '2026-06-19T03:13:17Z',
@@ -160,6 +162,13 @@ function formatDate(value: string) {
   }).format(date);
 }
 
+function formatCount(value: number) {
+  return new Intl.NumberFormat('en', {
+    maximumFractionDigits: value >= 1000 ? 1 : 0,
+    notation: value >= 1000 ? 'compact' : 'standard',
+  }).format(value);
+}
+
 const socialLogoSources: Record<string, SocialLogoSource> = {
   discord: { asset: '/social/discord.svg', color: '#5865F2', mode: 'mask' },
   github: { asset: '/social/github.svg', color: '#181717', mode: 'mask' },
@@ -205,7 +214,7 @@ function ProjectCard({ project }: { project: ProjectRecord }) {
         <p>{project.signal || project.summary}</p>
         <div className="project-meta">
           <span>pushed {formatDate(project.pushedAt)}</span>
-          <span>{project.stars} stars</span>
+          {project.stars >= 10 ? <span>{formatCount(project.stars)} stars</span> : null}
         </div>
         <div className="project-actions">
           {project.homepage ? (
@@ -267,6 +276,10 @@ function App() {
               <dd>{currentProjects.length + 1} active</dd>
             </div>
             <div>
+              <dt>stars</dt>
+              <dd>{formatCount(officialProject.stars)}</dd>
+            </div>
+            <div>
               <dt>updated</dt>
               <dd>{formatDate(data.generatedAt)}</dd>
             </div>
@@ -292,6 +305,9 @@ function App() {
           <p className="eyebrow">Official project</p>
           <h2>{officialProject.title}.</h2>
           <p>{officialProject.summary}</p>
+          <div className="official-meta">
+            <span>{formatCount(officialProject.stars)} GitHub stars</span>
+          </div>
           <div className="official-actions">
             {officialProject.homepage ? (
               <a href={officialProject.homepage} target="_blank" rel="noreferrer">
