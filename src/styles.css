@@ -257,12 +257,14 @@ footer {
 .social-row .social-badge {
   display: inline-flex;
   flex: 0 0 auto;
-  min-height: 36px;
+  width: 38px;
+  height: 38px;
   align-items: center;
+  justify-content: center;
   gap: 8px;
   border: 1px solid var(--line);
   border-radius: 8px;
-  padding: 7px 10px;
+  padding: 0;
   background: rgba(255, 255, 255, 0.86);
   color: #334155;
   font-size: 0.92rem;
@@ -270,16 +272,17 @@ footer {
   text-decoration: none;
 }
 
-.social-row a span:first-child,
-.social-row .social-badge span:first-child {
-  color: inherit;
+.social-row a:hover {
+  border-color: rgba(4, 120, 87, 0.35);
+  background: #ffffff;
+  color: #047857;
+  transform: translateY(-1px);
 }
 
-.social-row a span:last-child,
-.social-row .social-badge span:last-child {
-  color: #64748b;
-  font-family: "IBM Plex Mono", ui-monospace, monospace;
-  font-size: 0.74rem;
+.social-icon {
+  width: 19px;
+  height: 19px;
+  display: block;
 }
 
 .social-row .social-badge {
@@ -544,8 +547,7 @@ footer {
 
   .social-row a,
   .social-row .social-badge {
-    flex: 1 1 calc(50% - 6px);
-    min-width: 0;
+    flex: 0 0 38px;
   }
 
   .official-section {
