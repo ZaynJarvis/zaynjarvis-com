@@ -9,55 +9,67 @@ const recentWorkWindowDays = 60;
 const recentWorkCutoff = new Date(Date.now() - recentWorkWindowDays * 24 * 60 * 60 * 1000);
 const outFile = path.join(process.cwd(), 'public/data/projects.json');
 const includeRepos = new Map([
-  ['zouk', { priority: 100, signal: 'The operating room where agents and people coordinate real work.' }],
+  ['OpenViking', {
+    priority: 120,
+    homepage: 'https://openviking.ai',
+    category: 'Official context infrastructure',
+    summary: 'Open-source context database for AI agents: memory, resources, skills, provenance, and lifecycle control behind a viking:// filesystem.',
+    signal: 'The official infrastructure project: context as an inspectable runtime contract.',
+    reason: 'Current official flagship project.',
+  }],
+  ['zouk', { priority: 96, signal: 'The operating room where agents and people coordinate real work.' }],
   ['termclip', {
-    priority: 98,
+    priority: 90,
     category: 'Terminal capture tooling',
     signal: 'A small infrastructure tool for turning terminal sessions into shareable evidence.',
   }],
-  ['notes', { priority: 95, signal: 'Judgment updates turned into durable public artifacts.' }],
+  ['notes', { priority: 88, signal: 'Judgment updates turned into durable public artifacts.' }],
   ['oh-my-ppt', {
-    priority: 92,
+    priority: 86,
     category: 'Presentation generation surface',
     signal: 'A structured creative surface for turning intent into editable decks.',
   }],
   ['studio', {
-    priority: 90,
+    priority: 84,
     homepage: 'https://studio.zaynjarvis.com',
     category: 'Creative production surface',
     summary: 'A visual workflow surface for media generation, project previews, and embedded Zouk collaboration.',
     signal: 'Where artifacts become visible enough to judge and iterate.',
   }],
-  ['OpenViking', { priority: 88, signal: 'Memory plus context lifecycle, provenance, and rehydration.' }],
   ['hua-sheng-site', {
-    priority: 86,
+    priority: 82,
     category: 'Business website system',
     signal: 'A multilingual commercial web surface with SEO, content, and deployment discipline.',
   }],
   ['openviking-blog', {
-    priority: 84,
+    priority: 80,
     category: 'Technical publishing system',
     signal: 'A focused channel for making OpenViking architecture and agent runtime work legible.',
   }],
-  ['openclaw', { priority: 82, signal: 'A user-facing assistant layer around local and cloud agent capability.' }],
   ['context-infrastructure', {
-    priority: 80,
+    priority: 78,
     category: 'Agent context infrastructure',
     signal: 'Practical context, memory, and skill infrastructure for coding agents.',
   }],
-  ['aesthetics', { priority: 76, signal: 'A visual memory bank for making product and media taste inspectable.' }],
+  ['aesthetics', { priority: 74, signal: 'A visual memory bank for making product and media taste inspectable.' }],
   ['skills', {
-    priority: 74,
+    priority: 72,
     category: 'Agent skill library',
     signal: 'Reusable operating knowledge packaged as skills for AI builders.',
   }],
   ['agent-env-bridge', {
-    priority: 72,
+    priority: 70,
     category: 'Agent environment bridge',
     signal: 'A prototype bridge between cloud agents and trusted worker environments.',
   }],
-  ['night-city', { priority: 70, signal: 'A style system packaged as a reusable product surface.' }],
-  ['wanman', { priority: 64, signal: 'A control-room metaphor for multi-agent delegation.' }],
+  ['openclaw', {
+    priority: 42,
+    recentWork: false,
+    status: 'optional',
+    signal: 'A related assistant experiment kept as archive context, not current active work.',
+  }],
+  ['night-city', { priority: 40, signal: 'A style system packaged as a reusable product surface.' }],
+  ['wanman', { priority: 36, signal: 'A control-room metaphor for multi-agent delegation.' }],
   ['tmux-journal', { priority: 40, status: 'optional', signal: 'Developer workflow memory for terminal sessions.' }],
   ['Flutter-Sign-in-Button', { priority: 20, status: 'optional', signal: 'Legacy open-source utility with durable external usage.' }],
 ]);
@@ -230,7 +242,10 @@ function normalizeProject(repo, meta, readme) {
     ...(isPlainObject(readme.links) ? readme.links : {}),
   };
   const projectSocial = isPlainObject(readme.social) ? readme.social : {};
-  const recentWork = isRecentWork(repo);
+  const recentWork =
+    typeof overrides.recentWork === 'boolean'
+      ? overrides.recentWork
+      : isRecentWork(repo);
   const visual = visualFor(repo.name);
   const generatedCover = siteCoverFor(repo.name);
   const explicitCover = readme.cover || null;

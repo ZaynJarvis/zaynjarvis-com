@@ -77,33 +77,33 @@ const fallbackData: ProjectData = {
   },
   projects: [
     {
-      slug: 'zouk',
-      repo: 'ZaynJarvis/zouk',
-      title: 'Zouk',
-      category: 'Agent collaboration runtime',
-      priority: 100,
-      homepage: 'https://zouk.zaynjarvis.com',
-      githubUrl: 'https://github.com/ZaynJarvis/zouk',
-      summary: 'Zouk - collaborative AI agent platform',
-      signal: 'The operating room where agents and people coordinate real work.',
-      accentColor: '#0f766e',
-      secondaryColor: '#0ea5e9',
+      slug: 'OpenViking',
+      repo: 'ZaynJarvis/OpenViking',
+      title: 'OpenViking',
+      category: 'Official context infrastructure',
+      priority: 120,
+      homepage: 'https://openviking.ai',
+      githubUrl: 'https://github.com/ZaynJarvis/OpenViking',
+      summary: 'Open-source context database for AI agents: memory, resources, skills, provenance, and lifecycle control behind a viking:// filesystem.',
+      signal: 'The official infrastructure project: context as an inspectable runtime contract.',
+      accentColor: '#047857',
+      secondaryColor: '#0891b2',
       cover: null,
-      generatedCover: '/covers/zouk.png',
+      generatedCover: '/covers/openviking.png',
       fallbackCover: '/covers/registry-fallback.png',
       coverStatus: 'site-color',
-      stars: 6,
+      stars: 0,
       forks: 0,
-      updatedAt: '2026-05-30T10:23:58Z',
-      pushedAt: '2026-05-30T10:23:54Z',
-      fork: false,
+      updatedAt: '2026-06-19T03:13:17Z',
+      pushedAt: '2026-06-19T03:13:17Z',
+      fork: true,
       archived: false,
       recentWork: true,
-      recentWorkCutoff: '2026-04-30T00:00:00.000Z',
+      recentWorkCutoff: '2026-04-20T00:00:00.000Z',
       status: 'include',
       readmePath: null,
       source: 'github+curated',
-      reason: 'Active owned flagship project with live domain.',
+      reason: 'Current official flagship project.',
     },
   ],
 };
@@ -143,6 +143,16 @@ function coverFor(project: ProjectRecord) {
   return project.fallbackCover;
 }
 
+function formatDate(value: string) {
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return 'Unknown';
+  return new Intl.DateTimeFormat('en', {
+    day: '2-digit',
+    month: 'short',
+    year: 'numeric',
+  }).format(date);
+}
+
 function ProjectCard({ project }: { project: ProjectRecord }) {
   const destination = project.homepage || project.githubUrl;
   const style = {
@@ -160,7 +170,11 @@ function ProjectCard({ project }: { project: ProjectRecord }) {
           {project.category}
         </div>
         <h3>{project.title}</h3>
-        <p>{project.summary}</p>
+        <p>{project.signal || project.summary}</p>
+        <div className="project-meta">
+          <span>pushed {formatDate(project.pushedAt)}</span>
+          <span>{project.stars} stars</span>
+        </div>
         <div className="project-actions">
           {project.homepage ? (
             <a href={project.homepage} target="_blank" rel="noreferrer">
@@ -179,21 +193,48 @@ function ProjectCard({ project }: { project: ProjectRecord }) {
 function App() {
   const { data } = useProjectData();
   const projects = data.projects.filter((project) => project.status !== 'hidden');
-  const recentProjects = projects.filter((project) => project.recentWork);
+  const officialProject = projects.find((project) => project.slug === 'OpenViking') || projects[0] || fallbackData.projects[0];
+  const currentProjects = projects.filter(
+    (project) =>
+      project.status === 'include' &&
+      project.recentWork &&
+      project.slug !== officialProject.slug,
+  );
+  const supportingProjects = projects.filter((project) => project.status === 'optional');
+  const heroStyle = {
+    '--hero-accent': officialProject.accentColor || '#047857',
+    '--hero-secondary': officialProject.secondaryColor || '#0891b2',
+  } as React.CSSProperties;
 
   return (
     <main>
-      <section className="hero">
+      <section className="hero" style={heroStyle}>
+        <img className="hero-backdrop" src={coverFor(officialProject)} alt="" aria-hidden="true" />
         <div className="hero-copy">
-          <p className="eyebrow">ZaynJarvis project atlas</p>
+          <p className="eyebrow">Official project first</p>
           <h1>ZaynJarvis</h1>
           <p className="hero-lead">
-            Agent systems, context infrastructure, creative tools, and public notes.
+            OpenViking is the current official work. The surrounding projects are working notes, tools, and public surfaces around agent context infrastructure.
           </p>
           <div className="hero-actions">
-            <a href="#projects">Explore projects</a>
+            <a href={officialProject.homepage || officialProject.githubUrl} target="_blank" rel="noreferrer">OpenViking</a>
+            <a href="#projects">Current work</a>
             <a href="https://github.com/ZaynJarvis" target="_blank" rel="noreferrer">GitHub</a>
           </div>
+          <dl className="hero-ledger" aria-label="Homepage registry state">
+            <div>
+              <dt>registry</dt>
+              <dd>{projects.length} projects</dd>
+            </div>
+            <div>
+              <dt>current</dt>
+              <dd>{currentProjects.length + 1} active</dd>
+            </div>
+            <div>
+              <dt>updated</dt>
+              <dd>{formatDate(data.generatedAt)}</dd>
+            </div>
+          </dl>
           <div className="social-row">
             {data.social.map((link) => (
               link.url ? (
@@ -208,27 +249,66 @@ function App() {
             ))}
           </div>
         </div>
-        <div className="hero-panel" aria-label="Project preview">
-          <img className="hero-art" src="/og-cover.png" alt="ZaynJarvis project atlas artwork" />
-          <img className="avatar" src="https://github.com/ZaynJarvis.png" alt="ZaynJarvis GitHub avatar" />
+      </section>
+
+      <section className="official-section" aria-label="Official project">
+        <div className="official-copy">
+          <p className="eyebrow">Official project</p>
+          <h2>{officialProject.title}.</h2>
+          <p>{officialProject.summary}</p>
+          <div className="official-actions">
+            {officialProject.homepage ? (
+              <a href={officialProject.homepage} target="_blank" rel="noreferrer">
+                Site
+              </a>
+            ) : null}
+            <a href={officialProject.githubUrl} target="_blank" rel="noreferrer">
+              Repository
+            </a>
+          </div>
+        </div>
+        <div className="official-visual">
+          <img src={coverFor(officialProject)} alt={`${officialProject.title} project cover`} />
+          <div className="official-panel" aria-label="OpenViking runtime contract">
+            <span>viking://user/context</span>
+            <span>memory / resources / skills</span>
+            <span>provenance {'->'} retrieval {'->'} runtime</span>
+          </div>
         </div>
       </section>
 
       <section id="projects" className="projects-section">
         <div className="section-heading">
-          <p className="eyebrow">Recent work</p>
-          <h2>Recent projects.</h2>
+          <p className="eyebrow">Current work</p>
+          <h2>Active project surface.</h2>
         </div>
         <div className="project-grid">
-          {recentProjects.map((project) => (
+          {currentProjects.map((project) => (
             <ProjectCard key={project.slug} project={project} />
           ))}
         </div>
       </section>
 
+      {supportingProjects.length ? (
+        <section className="supporting-section" aria-label="Supporting archive">
+          <div className="section-heading section-heading--compact">
+            <p className="eyebrow">Archive context</p>
+            <h2>Related, not active.</h2>
+          </div>
+          <div className="supporting-list">
+            {supportingProjects.map((project) => (
+              <a key={project.slug} href={project.githubUrl} target="_blank" rel="noreferrer">
+                <span>{project.title}</span>
+                <span>{project.category}</span>
+              </a>
+            ))}
+          </div>
+        </section>
+      ) : null}
+
       <footer>
         <span>ZaynJarvis</span>
-        <span>Projects and notes.</span>
+        <span>OpenViking first. Projects and notes around it.</span>
       </footer>
     </main>
   );

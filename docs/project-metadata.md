@@ -37,7 +37,7 @@ status: include
 - `cover`: optional explicit PNG cover URL or site path. Repos do not need to carry a cover image.
 - `links`: optional secondary links.
 - `social`: optional project-specific social links.
-- `status`: `include`, `optional`, or `hidden`.
+- `status`: `include`, `optional`, or `hidden`. `include` appears in the active project surface when recent; `optional` is archive context and should not imply current active work.
 
 ## Cover Rule
 

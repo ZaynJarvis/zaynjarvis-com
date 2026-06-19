@@ -1,8 +1,8 @@
 # zaynjarvis.com
 
-Static homepage for ZaynJarvis and his project network.
+Static homepage for ZaynJarvis and his project network, with OpenViking presented as the current official project.
 
-The site is a Vite + React app intended for Cloudflare Pages. It presents recent work, live project surfaces, and social links, with project data generated from public GitHub metadata.
+The site is a Vite + React app intended for Cloudflare Pages. It presents OpenViking first, then recent work, live project surfaces, archive context, and social links, with project data generated from public GitHub metadata.
 
 ## Local Development
 
