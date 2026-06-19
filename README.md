@@ -38,7 +38,8 @@ The generated registry includes:
 - public homepage URL when present
 - GitHub stats/update time
 - site-owned imagegen cover fallback
-- imagegen `/covers/{repo}.png` for repos pushed in the last month
+- imagegen `/covers/{repo}.png` when a site-owned cover exists
+- rolling 60-day recent-work status from GitHub pushed-at time
 - include/optional/hidden status
 
 The repo metadata contract is documented in `docs/project-metadata.md`.

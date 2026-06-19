@@ -44,10 +44,12 @@ status: include
 Preferred cover source order:
 
 1. README front matter `cover`, only when a repo has a deliberate custom cover URL or site path.
-2. Site-owned imagegen cover under `/covers/{repo}.png` for repos pushed since `2026-04-30`.
+2. Site-owned imagegen cover under `/covers/{repo}.png` when that checked-in asset exists.
 3. Local imagegen fallback cover at `/covers/registry-fallback.png`.
 
 The default is intentionally site-owned: business repos are not required to carry cover images, and the frontend does not fall back to GitHub Open Graph images.
+
+`recentWork` is computed from a rolling 60-day pushed-at window each time `npm run sync:projects` is run. This keeps the homepage current without requiring a source edit for every sync.
 
 ## Generated Data
 

@@ -1,14 +1,26 @@
 import { Buffer } from 'node:buffer';
+import { existsSync } from 'node:fs';
 import { mkdir, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 
 const owner = 'ZaynJarvis';
 const generatedAt = new Date().toISOString();
-const recentWorkCutoff = new Date('2026-04-30T00:00:00.000Z');
+const recentWorkWindowDays = 60;
+const recentWorkCutoff = new Date(Date.now() - recentWorkWindowDays * 24 * 60 * 60 * 1000);
 const outFile = path.join(process.cwd(), 'public/data/projects.json');
 const includeRepos = new Map([
   ['zouk', { priority: 100, signal: 'The operating room where agents and people coordinate real work.' }],
+  ['termclip', {
+    priority: 98,
+    category: 'Terminal capture tooling',
+    signal: 'A small infrastructure tool for turning terminal sessions into shareable evidence.',
+  }],
   ['notes', { priority: 95, signal: 'Judgment updates turned into durable public artifacts.' }],
+  ['oh-my-ppt', {
+    priority: 92,
+    category: 'Presentation generation surface',
+    signal: 'A structured creative surface for turning intent into editable decks.',
+  }],
   ['studio', {
     priority: 90,
     homepage: 'https://studio.zaynjarvis.com',
@@ -17,8 +29,33 @@ const includeRepos = new Map([
     signal: 'Where artifacts become visible enough to judge and iterate.',
   }],
   ['OpenViking', { priority: 88, signal: 'Memory plus context lifecycle, provenance, and rehydration.' }],
+  ['hua-sheng-site', {
+    priority: 86,
+    category: 'Business website system',
+    signal: 'A multilingual commercial web surface with SEO, content, and deployment discipline.',
+  }],
+  ['openviking-blog', {
+    priority: 84,
+    category: 'Technical publishing system',
+    signal: 'A focused channel for making OpenViking architecture and agent runtime work legible.',
+  }],
   ['openclaw', { priority: 82, signal: 'A user-facing assistant layer around local and cloud agent capability.' }],
+  ['context-infrastructure', {
+    priority: 80,
+    category: 'Agent context infrastructure',
+    signal: 'Practical context, memory, and skill infrastructure for coding agents.',
+  }],
   ['aesthetics', { priority: 76, signal: 'A visual memory bank for making product and media taste inspectable.' }],
+  ['skills', {
+    priority: 74,
+    category: 'Agent skill library',
+    signal: 'Reusable operating knowledge packaged as skills for AI builders.',
+  }],
+  ['agent-env-bridge', {
+    priority: 72,
+    category: 'Agent environment bridge',
+    signal: 'A prototype bridge between cloud agents and trusted worker environments.',
+  }],
   ['night-city', { priority: 70, signal: 'A style system packaged as a reusable product surface.' }],
   ['wanman', { priority: 64, signal: 'A control-room metaphor for multi-agent delegation.' }],
   ['tmux-journal', { priority: 40, status: 'optional', signal: 'Developer workflow memory for terminal sessions.' }],
@@ -27,11 +64,18 @@ const includeRepos = new Map([
 
 const categoryByRepo = {
   zouk: 'Agent collaboration runtime',
+  termclip: 'Terminal capture tooling',
   notes: 'Public thinking system',
+  'oh-my-ppt': 'Presentation generation surface',
   studio: 'Creative production surface',
   OpenViking: 'Context infrastructure',
+  'hua-sheng-site': 'Business website system',
+  'openviking-blog': 'Technical publishing system',
   openclaw: 'Personal assistant system',
+  'context-infrastructure': 'Agent context infrastructure',
   aesthetics: 'Visual reference workbook',
+  skills: 'Agent skill library',
+  'agent-env-bridge': 'Agent environment bridge',
   'night-city': 'Design-system experiment',
   wanman: 'Agent matrix runtime',
   'tmux-journal': 'Developer workflow tooling',
@@ -40,11 +84,18 @@ const categoryByRepo = {
 
 const titleByRepo = {
   zouk: 'Zouk',
+  termclip: 'Termclip',
   notes: 'Notes',
+  'oh-my-ppt': 'Oh My PPT',
   studio: 'Studio',
   OpenViking: 'OpenViking',
+  'hua-sheng-site': 'HuaSheng Site',
+  'openviking-blog': 'OpenViking Blog',
   openclaw: 'OpenClaw',
+  'context-infrastructure': 'Context Infrastructure',
   aesthetics: 'Aesthetics Gallery',
+  skills: 'Skills',
+  'agent-env-bridge': 'Agent Environment Bridge',
   'night-city': 'Night City',
   wanman: 'Wanman',
   'tmux-journal': 'tmux-journal',
@@ -53,11 +104,18 @@ const titleByRepo = {
 
 const visualByRepo = {
   zouk: { accent: '#0f766e', secondary: '#0ea5e9' },
+  termclip: { accent: '#0f172a', secondary: '#22c55e' },
   notes: { accent: '#b45309', secondary: '#2563eb' },
+  'oh-my-ppt': { accent: '#be123c', secondary: '#7c3aed' },
   studio: { accent: '#7c3aed', secondary: '#db2777' },
   OpenViking: { accent: '#047857', secondary: '#0891b2' },
+  'hua-sheng-site': { accent: '#b91c1c', secondary: '#d97706' },
+  'openviking-blog': { accent: '#0f766e', secondary: '#4f46e5' },
   openclaw: { accent: '#1d4ed8', secondary: '#0f766e' },
+  'context-infrastructure': { accent: '#4338ca', secondary: '#0891b2' },
   aesthetics: { accent: '#c2410c', secondary: '#9333ea' },
+  skills: { accent: '#0369a1', secondary: '#0f766e' },
+  'agent-env-bridge': { accent: '#0f766e', secondary: '#f59e0b' },
   'night-city': { accent: '#4f46e5', secondary: '#db2777' },
   wanman: { accent: '#c2410c', secondary: '#0891b2' },
   'tmux-journal': { accent: '#0f172a', secondary: '#16a34a' },
@@ -147,6 +205,12 @@ function coverSlug(repo) {
   return repo.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 }
 
+function siteCoverFor(repo) {
+  const relativePath = `/covers/${coverSlug(repo)}.png`;
+  const filePath = path.join(process.cwd(), 'public', relativePath);
+  return existsSync(filePath) ? relativePath : null;
+}
+
 function visualFor(repo) {
   return visualByRepo[repo] || { accent: '#0f766e', secondary: '#2563eb' };
 }
@@ -168,7 +232,7 @@ function normalizeProject(repo, meta, readme) {
   const projectSocial = isPlainObject(readme.social) ? readme.social : {};
   const recentWork = isRecentWork(repo);
   const visual = visualFor(repo.name);
-  const generatedCover = recentWork ? `/covers/${coverSlug(repo.name)}.png` : null;
+  const generatedCover = siteCoverFor(repo.name);
   const explicitCover = readme.cover || null;
 
   return {
@@ -188,7 +252,7 @@ function normalizeProject(repo, meta, readme) {
     cover: explicitCover,
     generatedCover,
     fallbackCover: '/covers/registry-fallback.png',
-    coverStatus: explicitCover ? 'explicit' : recentWork ? 'site-color' : 'site-fallback',
+    coverStatus: explicitCover ? 'explicit' : generatedCover ? 'site-color' : 'site-fallback',
     stars: repo.stargazers_count || 0,
     forks: repo.forks_count || 0,
     updatedAt: repo.updated_at,
@@ -231,6 +295,7 @@ async function main() {
       generatedCoverConvention: '/covers/{repo}.png',
       fallbackCover: '/covers/registry-fallback.png',
       recentWorkCutoff: recentWorkCutoff.toISOString(),
+      recentWorkWindowDays,
       fields: ['title', 'category', 'homepage', 'priority', 'summary', 'signal', 'accentColor', 'secondaryColor', 'cover', 'links', 'social', 'status'],
     },
     projects,

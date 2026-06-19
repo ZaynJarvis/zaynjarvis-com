@@ -53,6 +53,7 @@ type ProjectData = {
     generatedCoverConvention?: string;
     fallbackCover?: string;
     recentWorkCutoff?: string;
+    recentWorkWindowDays?: number;
   };
   projects: ProjectRecord[];
 };
