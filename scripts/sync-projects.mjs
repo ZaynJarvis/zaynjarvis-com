@@ -137,7 +137,7 @@ const visualByRepo = {
 const social = [
   { label: 'Instagram', handle: 'zaynjarvis', url: 'https://www.instagram.com/zaynjarvis/' },
   { label: 'X', handle: 'zaynjarvis', url: 'https://x.com/zaynjarvis' },
-  { label: 'LinkedIn', handle: 'liuzhiheng', url: 'https://www.linkedin.com/in/liuzhiheng' },
+  { label: 'LinkedIn', handle: 'zhihengliu', url: 'https://www.linkedin.com/in/zhihengliu' },
   { label: 'GitHub', handle: 'ZaynJarvis', url: 'https://github.com/ZaynJarvis' },
   { label: 'Discord', handle: 'zaynjarvis', url: 'https://discord.com/' },
 ];
