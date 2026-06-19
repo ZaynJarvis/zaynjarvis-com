@@ -154,6 +154,7 @@ function contentType(filePath) {
     '.jpg': 'image/jpeg',
     '.jpeg': 'image/jpeg',
     '.webp': 'image/webp',
+    '.svg': 'image/svg+xml',
     '.ico': 'image/x-icon',
   }[ext] || 'application/octet-stream';
 }
@@ -179,16 +180,18 @@ function collectFiles(root) {
       if (entry.isFile()) {
         const contents = fs.readFileSync(absolute);
         const ext = path.extname(relative).slice(1);
+        const type = contentType(relative);
         const hash = crypto.createHash('sha256')
           .update(contents.toString('base64'))
           .update(ext)
+          .update(type)
           .digest('hex')
           .slice(0, 32);
         files.push({
           relative,
           absolute,
           hash,
-          contentType: contentType(relative),
+          contentType: type,
           sizeInBytes: contents.byteLength,
         });
       }
