@@ -18,6 +18,12 @@ const includeRepos = new Map([
     reason: 'Current official flagship project.',
   }],
   ['zouk', { priority: 96, signal: 'The operating room where agents and people coordinate real work.' }],
+  ['swarm-eval', {
+    priority: 94,
+    category: 'Agent evaluation infrastructure',
+    summary: 'Agent-swarm pipeline for eval-session analysis: worker classification, coordinator reflection, persistent pattern libraries, and reusable diagnostics across datasets.',
+    signal: 'Evaluation workbench for turning agent failures into structured, reusable pattern knowledge.',
+  }],
   ['termclip', {
     priority: 90,
     category: 'Terminal capture tooling',
@@ -76,6 +82,7 @@ const includeRepos = new Map([
 
 const categoryByRepo = {
   zouk: 'Agent collaboration runtime',
+  'swarm-eval': 'Agent evaluation infrastructure',
   termclip: 'Terminal capture tooling',
   notes: 'Public thinking system',
   'oh-my-ppt': 'Presentation generation surface',
@@ -96,6 +103,7 @@ const categoryByRepo = {
 
 const titleByRepo = {
   zouk: 'Zouk',
+  'swarm-eval': 'Swarm Eval',
   termclip: 'Termclip',
   notes: 'Notes',
   'oh-my-ppt': 'Oh My PPT',
@@ -116,6 +124,7 @@ const titleByRepo = {
 
 const visualByRepo = {
   zouk: { accent: '#0f766e', secondary: '#0ea5e9' },
+  'swarm-eval': { accent: '#4338ca', secondary: '#06b6d4' },
   termclip: { accent: '#0f172a', secondary: '#22c55e' },
   notes: { accent: '#b45309', secondary: '#2563eb' },
   'oh-my-ppt': { accent: '#be123c', secondary: '#7c3aed' },
