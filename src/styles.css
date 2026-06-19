@@ -270,6 +270,18 @@ footer {
   text-decoration: none;
 }
 
+.social-row a span:first-child,
+.social-row .social-badge span:first-child {
+  color: inherit;
+}
+
+.social-row a span:last-child,
+.social-row .social-badge span:last-child {
+  color: #64748b;
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 0.74rem;
+}
+
 .social-row .social-badge {
   color: #64748b;
 }

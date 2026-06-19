@@ -66,8 +66,9 @@ const fallbackData: ProjectData = {
   social: [
     { label: 'Instagram', handle: 'zaynjarvis', url: 'https://www.instagram.com/zaynjarvis/' },
     { label: 'X', handle: 'zaynjarvis', url: 'https://x.com/zaynjarvis' },
+    { label: 'LinkedIn', handle: 'liuzhiheng', url: 'https://www.linkedin.com/in/liuzhiheng' },
     { label: 'GitHub', handle: 'ZaynJarvis', url: 'https://github.com/ZaynJarvis' },
-    { label: 'Discord', handle: 'zaynjarvis' },
+    { label: 'Discord', handle: 'zaynjarvis', url: 'https://discord.com/' },
   ],
   schema: {
     readmeFrontMatterDelimiter: '---',
@@ -239,11 +240,13 @@ function App() {
             {data.social.map((link) => (
               link.url ? (
                 <a key={link.label} href={link.url} target="_blank" rel="noreferrer" title={link.label}>
-                  {link.label}
+                  <span>{link.label}</span>
+                  <span>{link.handle}</span>
                 </a>
               ) : (
                 <span key={link.label} className="social-badge" title={link.label}>
-                  {link.label}
+                  <span>{link.label}</span>
+                  <span>{link.handle}</span>
                 </span>
               )
             ))}
