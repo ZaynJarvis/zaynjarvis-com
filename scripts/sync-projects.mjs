@@ -34,6 +34,7 @@ const includeRepos = new Map([
   ['notes', { priority: 88, signal: 'Judgment updates turned into durable public artifacts.' }],
   ['oh-my-ppt', {
     priority: 86,
+    status: 'hidden',
     category: 'Presentation generation surface',
     signal: 'A structured creative surface for turning intent into editable decks.',
   }],
@@ -46,6 +47,7 @@ const includeRepos = new Map([
   }],
   ['hua-sheng-site', {
     priority: 82,
+    status: 'hidden',
     category: 'Business website system',
     signal: 'A multilingual commercial web surface with SEO, content, and deployment discipline.',
   }],
@@ -62,6 +64,7 @@ const includeRepos = new Map([
   ['aesthetics', { priority: 74, signal: 'A visual memory bank for making product and media taste inspectable.' }],
   ['skills', {
     priority: 72,
+    status: 'hidden',
     category: 'Agent skill library',
     signal: 'Reusable operating knowledge packaged as skills for AI builders.',
   }],
@@ -77,7 +80,7 @@ const includeRepos = new Map([
     signal: 'A related assistant experiment kept as archive context, not current active work.',
   }],
   ['night-city', { priority: 40, signal: 'A style system packaged as a reusable product surface.' }],
-  ['wanman', { priority: 36, signal: 'A control-room metaphor for multi-agent delegation.' }],
+  ['wanman', { priority: 36, status: 'hidden', signal: 'A control-room metaphor for multi-agent delegation.' }],
   ['tmux-journal', { priority: 40, status: 'optional', signal: 'Developer workflow memory for terminal sessions.' }],
   ['Flutter-Sign-in-Button', { priority: 20, status: 'optional', signal: 'Legacy open-source utility with durable external usage.' }],
 ]);
@@ -334,7 +337,11 @@ function normalizeProject(repo, meta, readme, statsRepo = repo) {
     status,
     readmePath: meta.readmePath,
     source: Object.keys(readme).length ? 'readme' : 'github+curated',
-    reason: overrides.reason || (status === 'include' ? 'Selected for the public ZaynJarvis project network.' : 'Optional project.'),
+    reason: overrides.reason || (status === 'hidden'
+      ? 'Hidden from the current public homepage.'
+      : status === 'include'
+        ? 'Selected for the public ZaynJarvis project network.'
+        : 'Optional project.'),
   };
 }
 
