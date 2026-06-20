@@ -219,10 +219,51 @@ function cleanScalar(value) {
 }
 
 async function readmeMetadata(repo) {
-  const payload = await ghMaybe(`https://api.github.com/repos/${owner}/${repo}/readme`);
-  if (!payload?.content) return { meta: {}, readmePath: null };
+  const payload = await ghMaybe(`https://api.github.com/repos/${owner}/${repo.name}/readme`);
+  if (!payload?.content) return { meta: {}, readmePath: null, readmeCover: null };
   const markdown = Buffer.from(payload.content, payload.encoding || 'base64').toString('utf8');
-  return { meta: parseFrontMatter(markdown), readmePath: payload.path || 'README.md' };
+  return {
+    meta: parseFrontMatter(markdown),
+    readmePath: payload.path || 'README.md',
+    readmeCover: extractReadmeTopCover(markdown, payload, repo),
+  };
+}
+
+function extractReadmeTopCover(markdown, payload, repo) {
+  const body = stripFrontMatter(markdown);
+  for (const rawLine of body.split('\n')) {
+    const line = rawLine.trim();
+    if (!line) continue;
+    if (line.startsWith('<!--')) continue;
+    if (line.startsWith('#')) return null;
+
+    const markdownImage = line.match(/^!\[[^\]]*]\(([^)\s]+)(?:\s+['"][^)]*['"])?\)$/);
+    if (markdownImage) return resolveReadmeAsset(markdownImage[1], payload, repo);
+
+    const htmlImage = line.match(/^<img\b[^>]*\bsrc=['"]([^'"]+)['"][^>]*>/i);
+    if (htmlImage) return resolveReadmeAsset(htmlImage[1], payload, repo);
+
+    return null;
+  }
+  return null;
+}
+
+function stripFrontMatter(markdown) {
+  if (!markdown.startsWith('---\n')) return markdown;
+  const end = markdown.indexOf('\n---', 4);
+  return end === -1 ? markdown : markdown.slice(end + 4);
+}
+
+function resolveReadmeAsset(source, payload, repo) {
+  const cleanSource = String(source || '').trim().replace(/^<|>$/g, '');
+  if (!cleanSource || cleanSource.startsWith('data:') || cleanSource.startsWith('#')) return null;
+  if (/^https?:\/\//i.test(cleanSource)) return cleanSource;
+  if (cleanSource.startsWith('//')) return `https:${cleanSource}`;
+  if (cleanSource.startsWith('/')) {
+    return `https://raw.githubusercontent.com/${repo.full_name}/${repo.default_branch}${cleanSource}`;
+  }
+  const base = payload.download_url || `https://raw.githubusercontent.com/${repo.full_name}/${repo.default_branch}/${payload.path || 'README.md'}`;
+  return new URL(cleanSource, base).toString();
 }
 
 function coverSlug(repo) {
@@ -261,7 +302,7 @@ function normalizeProject(repo, meta, readme, statsRepo = repo) {
       : isRecentWork(repo);
   const visual = visualFor(repo.name);
   const generatedCover = siteCoverFor(repo.name);
-  const explicitCover = readme.cover || null;
+  const explicitCover = readme.cover || meta.readmeCover || null;
 
   return {
     slug: repo.name,
@@ -280,7 +321,7 @@ function normalizeProject(repo, meta, readme, statsRepo = repo) {
     cover: explicitCover,
     generatedCover,
     fallbackCover: '/covers/registry-fallback.png',
-    coverStatus: explicitCover ? 'explicit' : generatedCover ? 'site-color' : 'site-fallback',
+    coverStatus: readme.cover ? 'explicit' : meta.readmeCover ? 'repo-readme' : generatedCover ? 'site-color' : 'site-fallback',
     stars: statsRepo.stargazers_count || 0,
     forks: statsRepo.forks_count || 0,
     starsSource: overrides.statsRepo || repo.full_name,
@@ -307,7 +348,7 @@ async function main() {
   const projects = [];
 
   for (const repo of selected) {
-    const meta = await readmeMetadata(repo.name);
+    const meta = await readmeMetadata(repo);
     const overrides = includeRepos.get(repo.name) || {};
     const statsRepo = overrides.statsRepo
       ? await ghMaybe(`https://api.github.com/repos/${overrides.statsRepo}`)
@@ -320,11 +361,11 @@ async function main() {
     schemaVersion: 1,
     generatedAt,
     owner,
-    source: 'github-api + README metadata front matter + zaynjarvis-com visual fallback',
+    source: 'github-api + README metadata/front matter/top cover + zaynjarvis-com visual fallback',
     social,
     schema: {
       readmeFrontMatterDelimiter: '---',
-      coverConvention: 'zaynjarvis-com owned color covers',
+      coverConvention: 'README front matter cover, README top image, or zaynjarvis-com owned color covers',
       generatedCoverConvention: '/covers/{repo}.png',
       fallbackCover: '/covers/registry-fallback.png',
       recentWorkCutoff: recentWorkCutoff.toISOString(),

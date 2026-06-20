@@ -37,7 +37,7 @@ The generated registry includes:
 - GitHub repo
 - public homepage URL when present
 - GitHub stats/update time
-- site-owned imagegen cover fallback
+- README front matter cover, README top image cover, or site-owned imagegen cover fallback
 - imagegen `/covers/{repo}.png` when a site-owned cover exists
 - rolling 60-day recent-work status from GitHub pushed-at time
 - include/optional/hidden status

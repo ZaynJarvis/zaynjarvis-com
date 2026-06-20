@@ -31,7 +31,7 @@ type ProjectRecord = {
   cover: string | null;
   generatedCover?: string | null;
   fallbackCover: string;
-  coverStatus?: 'explicit' | 'site-color' | 'site-fallback';
+  coverStatus?: 'explicit' | 'repo-readme' | 'site-color' | 'site-fallback';
   stars: number;
   starsSource?: string;
   forks: number;
