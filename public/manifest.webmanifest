@@ -1,11 +1,12 @@
 {
-  "name": "ZaynJarvis",
+  "name": "ZaynJarvis Portfolio",
   "short_name": "ZaynJarvis",
+  "description": "Open-source software, AI agent infrastructure, developer tools, and experiments.",
   "start_url": "/",
   "display": "standalone",
   "scope": "/",
-  "background_color": "#f8fafc",
-  "theme_color": "#111827",
+  "background_color": "#F3F7F6",
+  "theme_color": "#17211F",
   "icons": [
     {
       "src": "/favicon.png",

@@ -3,26 +3,94 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="theme-color" content="#111827" />
+    <meta name="theme-color" content="#F3F7F6" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#17211F" media="(prefers-color-scheme: dark)" />
     <meta
       name="description"
-      content="ZaynJarvis builds agent systems, context infrastructure, media tools, and public notes across the zaynjarvis.com project network."
+      content="Zayn Jarvis builds open-source AI agent infrastructure for context, coordination, evaluation, and developer workflows. Explore OpenViking and related projects."
     />
-    <meta property="og:title" content="ZaynJarvis" />
+    <meta name="author" content="Zayn Jarvis" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <link rel="canonical" href="https://zaynjarvis.com/" />
+
+    <meta property="og:title" content="Zayn Jarvis — AI Agent Infrastructure & Open-Source Tools" />
     <meta
       property="og:description"
-      content="Homepage for ZaynJarvis projects, live systems, notes, and experiments."
+      content="Open-source infrastructure for agent context, coordination, evaluation, and developer workflows. Explore OpenViking and related projects."
     />
     <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://zaynjarvis.com" />
+    <meta property="og:url" content="https://zaynjarvis.com/" />
+    <meta property="og:site_name" content="ZaynJarvis" />
+    <meta property="og:locale" content="en_SG" />
     <meta property="og:image" content="https://zaynjarvis.com/og-cover.png" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:image:width" content="1400" />
+    <meta property="og:image:height" content="737" />
+    <meta property="og:image:alt" content="Zayn Jarvis — AI agent infrastructure and open-source tools" />
+
     <meta name="twitter:card" content="summary_large_image" />
-    <link rel="icon" href="/favicon.png" type="image/png" />
-    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <meta name="twitter:title" content="Zayn Jarvis — AI Agent Infrastructure & Open-Source Tools" />
+    <meta
+      name="twitter:description"
+      content="Open-source infrastructure for agent context, coordination, evaluation, and developer workflows. Explore OpenViking and related projects."
+    />
+    <meta name="twitter:image" content="https://zaynjarvis.com/og-cover.png" />
+    <meta name="twitter:image:alt" content="Zayn Jarvis — AI agent infrastructure and open-source tools" />
+
+    <link rel="icon" href="/favicon.png" sizes="256x256" type="image/png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" sizes="180x180" />
     <link rel="manifest" href="/manifest.webmanifest" />
-    <title>ZaynJarvis</title>
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "Person",
+            "@id": "https://zaynjarvis.com/#person",
+            "name": "Zayn Jarvis",
+            "alternateName": "ZaynJarvis",
+            "url": "https://zaynjarvis.com/",
+            "homeLocation": {
+              "@type": "Country",
+              "name": "Singapore"
+            },
+            "sameAs": [
+              "https://github.com/ZaynJarvis",
+              "https://www.linkedin.com/in/zhihengliu"
+            ]
+          },
+          {
+            "@type": "WebSite",
+            "@id": "https://zaynjarvis.com/#website",
+            "name": "Zayn Jarvis — AI Agent Infrastructure & Open-Source Tools",
+            "url": "https://zaynjarvis.com/",
+            "inLanguage": "en",
+            "publisher": { "@id": "https://zaynjarvis.com/#person" }
+          }
+        ]
+      }
+    </script>
+    <title>Zayn Jarvis — AI Agent Infrastructure &amp; Open-Source Tools</title>
   </head>
   <body>
+    <noscript>
+      <main>
+        <h1>Zayn Jarvis — AI agent infrastructure and open-source tools</h1>
+        <p>Zayn builds and publishes tools for agent context, coordination, evaluation, and developer workflows.</p>
+        <h2>Current focus</h2>
+        <p><a href="https://openviking.ai/">OpenViking</a> is an open-source context database for AI agents. Project statistics and source refer to the <a href="https://github.com/volcengine/OpenViking">Volcengine upstream repository</a>.</p>
+        <h2>Selected projects</h2>
+        <ul>
+          <li><a href="https://zouk.zaynjarvis.com/">Zouk</a> — collaboration infrastructure for agents and people.</li>
+          <li><a href="https://github.com/ZaynJarvis/swarm-eval">Swarm Eval</a> — evaluation infrastructure for reusable agent failure knowledge.</li>
+          <li><a href="https://github.com/ZaynJarvis/termclip">Termclip</a> — terminal sessions captured as shareable evidence.</li>
+          <li><a href="https://notes.zaynjarvis.com/">Notes</a> — durable public notes and judgment updates.</li>
+          <li><a href="https://studio.zaynjarvis.com/">Studio</a> — a creative production surface.</li>
+          <li><a href="https://gallery.zaynjarvis.com/">Aesthetics Gallery</a> — a visual reference workbook.</li>
+        </ul>
+        <p>Browse the complete public source index on <a href="https://github.com/ZaynJarvis">GitHub</a> or view the professional profile on <a href="https://www.linkedin.com/in/zhihengliu">LinkedIn</a>.</p>
+      </main>
+    </noscript>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
