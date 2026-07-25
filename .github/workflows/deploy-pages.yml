@@ -23,9 +23,12 @@ jobs:
       - run: npm ci
       - run: npm run build
 
-      - run: node scripts/deploy-cloudflare-pages.mjs
+      # The old MCP-OAuth deploy path (scripts/deploy-cloudflare-pages.mjs) broke
+      # when its stored tokens expired (every deploy since 2026-06-20 failed).
+      # Plain wrangler + an API token secret has nothing to expire silently.
+      # Requires repo secret CLOUDFLARE_PAGES_API_TOKEN with permission
+      # "Account > Cloudflare Pages > Edit".
+      - run: npx -y wrangler@latest pages deploy dist --project-name zaynjarvis-com --branch main
         env:
-          CF_ACCOUNT_ID: c27c3d9e70c028c8076add760bc0a638
-          CF_PAGES_PROJECT: zaynjarvis-com
-          CF_MCP_CLIENT_INFO_JSON: ${{ secrets.CF_MCP_CLIENT_INFO_JSON }}
-          CF_MCP_TOKENS_JSON: ${{ secrets.CF_MCP_TOKENS_JSON }}
+          CLOUDFLARE_ACCOUNT_ID: c27c3d9e70c028c8076add760bc0a638
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_PAGES_API_TOKEN }}
