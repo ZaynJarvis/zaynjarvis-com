@@ -16,6 +16,7 @@ const capabilities: Record<string, Capability> = {
   OpenViking: 'Context', notes: 'Context', 'context-infrastructure': 'Context', 'tmux-journal': 'Context',
   zouk: 'Coordination', openclaw: 'Coordination', 'swarm-eval': 'Evidence', termclip: 'Evidence',
   studio: 'Interfaces', aesthetics: 'Interfaces', 'night-city': 'Interfaces', 'Flutter-Sign-in-Button': 'Interfaces',
+  'trackpad-studio': 'Interfaces',
 };
 
 function capability(project: ProjectRecord): Capability {
@@ -78,7 +79,7 @@ function App() {
           <p className="eyebrow">Context field manual · public projects</p>
           <h1 id="hero-title">Tools for agents that need <em>context</em>, coordination, and evidence.</h1>
           <p className="hero-lead">A field index of open-source agent infrastructure, evaluation tools, interfaces, and experiments—with source and project status kept visible.</p>
-          <div className="hero-actions"><a href="#map">Trace the work ↓</a>{openViking && <a href={openViking.githubUrl} target="_blank" rel="noreferrer">View OpenViking <Arrow /></a>}</div>
+          <div className="hero-actions"><a href="#map">Trace the work ↓</a><a href="https://canvas.zaynjarvis.com" target="_blank" rel="noreferrer">New · Trackpad Studio <Arrow /></a>{openViking && <a href={openViking.githubUrl} target="_blank" rel="noreferrer">View OpenViking <Arrow /></a>}</div>
         </div>
         <dl className="hero-ledger" aria-label="Portfolio status">
           <div><dt>Focus</dt><dd>OpenViking</dd></div><div><dt>Field</dt><dd>Context infrastructure</dd></div><div><dt>Current projects</dt><dd>{data ? current.length : '—'}</dd></div>
@@ -106,7 +107,7 @@ function App() {
 
       <section className="about" id="about" aria-labelledby="about-title"><p className="eyebrow">About this index</p><h2 id="about-title">Sources before claims.</h2><p>This portfolio groups ZaynJarvis repositories by capability and links each entry to its public source. Forks and inactive work are labelled rather than presented as original or current.</p></section>
     </main>
-    <footer><span>© {new Date().getFullYear()} ZaynJarvis</span><span><a href="https://github.com/ZaynJarvis" target="_blank" rel="noreferrer">GitHub</a> · <a href="https://www.linkedin.com/in/zhihengliu" target="_blank" rel="noreferrer">LinkedIn</a></span><a href="#top">Back to top ↑</a></footer>
+    <footer><span>© {new Date().getFullYear()} ZaynJarvis</span><span><a href="https://github.com/ZaynJarvis" target="_blank" rel="noreferrer">GitHub</a> · <a href="https://www.linkedin.com/in/zhihengliu" target="_blank" rel="noreferrer">LinkedIn</a> · <a href="https://buymeacoffee.com/zaynjarvis?status=1" target="_blank" rel="noreferrer">Buy me a coffee ☕</a></span><a href="#top">Back to top ↑</a></footer>
   </>;
 }
 
