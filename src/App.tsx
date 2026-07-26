@@ -80,14 +80,6 @@ function ProjectLinks({ project, compact = false }: { project: ProjectRecord; co
 
 function App() {
   const { data, error, retry } = useProjects();
-  const previewRef = React.useRef<HTMLImageElement>(null);
-  const [previewSlug, setPreviewSlug] = React.useState<string | null>(null);
-  const movePreview = (event: React.MouseEvent) => {
-    const el = previewRef.current;
-    if (!el) return;
-    const x = Math.min(event.clientX + 32, window.innerWidth - 340);
-    el.style.transform = `translate(${x}px, ${event.clientY - 110}px) rotate(-1.5deg)`;
-  };
   const visible = data?.projects.filter((project) => project.status !== 'hidden') ?? [];
   const current = visible.filter((project) => project.status === 'include' && project.recentWork === true);
   const archive = visible.filter((project) => project.status === 'optional' || (project.status === 'include' && !project.recentWork));
@@ -145,7 +137,7 @@ function App() {
         </figure>
       </section>}
 
-      {data && <section className="ledger-section" id="index" aria-labelledby="index-title" onMouseMove={movePreview} onMouseLeave={() => setPreviewSlug(null)}>
+      {data && <section className="ledger-section" id="index" aria-labelledby="index-title">
         <div className="section-head">
           <p className="eyebrow">Index</p>
           <h2 id="index-title">Grouped by what each project enables.</h2>
@@ -156,7 +148,7 @@ function App() {
           return projects.length ? <section className="ledger-group" key={group} aria-labelledby={`cap-${group}`}>
             <h3 className="ledger-group-title" id={`cap-${group}`}>{group}<span>{String(projects.length).padStart(2, '0')}</span></h3>
             <ul className="ledger-rows">
-              {projects.map((project) => <li className="ledger-row" key={project.slug} onMouseEnter={() => setPreviewSlug(project.slug)}>
+              {projects.map((project) => <li className="ledger-row" key={project.slug} style={{ '--plate': `url(/previews/${project.slug.toLowerCase()}.jpg)` } as React.CSSProperties}>
                 <span className="ledger-num" aria-hidden="true">{String(ordered.indexOf(project) + 1).padStart(2, '0')}</span>
                 <div className="ledger-main">
                   <h4>{project.title}</h4>
@@ -172,14 +164,6 @@ function App() {
             </ul>
           </section> : null;
         })}
-        <img
-          ref={previewRef}
-          className={previewSlug ? 'ledger-preview visible' : 'ledger-preview'}
-          src={previewSlug ? `/previews/${previewSlug.toLowerCase()}.jpg` : undefined}
-          alt=""
-          aria-hidden="true"
-          onError={() => setPreviewSlug(null)}
-        />
       </section>}
 
       {archive.length > 0 && <section className="archive-section" aria-labelledby="archive-title">

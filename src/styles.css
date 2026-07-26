@@ -301,6 +301,8 @@ footer {
 }
 
 .ledger-row {
+  position: relative;
+  z-index: 0;
   display: grid;
   grid-template-columns: 2.5rem minmax(0, 1fr) 14rem auto;
   gap: 8px 24px;
@@ -310,6 +312,22 @@ footer {
   margin-inline: -12px;
 }
 .ledger-row:hover { background: var(--ivory); }
+@media (hover: hover) {
+  .ledger-row::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background-image: var(--plate);
+    background-size: cover;
+    background-position: center;
+    filter: contrast(1.45) brightness(0.985) saturate(1.5);
+    opacity: 0;
+    transition: opacity 0.25s ease;
+    pointer-events: none;
+  }
+  .ledger-row:hover::before { opacity: 1; }
+}
 .ledger-num {
   padding-top: 4px;
   color: var(--stone);
@@ -343,29 +361,6 @@ footer {
   text-transform: uppercase;
 }
 .ledger-row .project-links { flex-direction: column; gap: 2px; padding-top: 2px; }
-
-.ledger-preview { display: none; }
-@media (hover: hover) and (min-width: 901px) {
-  .ledger-preview {
-    display: block;
-    position: fixed;
-    top: 0;
-    left: 0;
-    z-index: 20;
-    width: 300px;
-    aspect-ratio: 3 / 2;
-    object-fit: cover;
-    border: 1px solid var(--border);
-    border-radius: 3px;
-    background: var(--ivory);
-    box-shadow: 0 24px 48px rgba(20, 20, 19, 0.22);
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.18s ease;
-    will-change: transform;
-  }
-  .ledger-preview.visible { opacity: 1; }
-}
 
 /* ---------- archive ---------- */
 
