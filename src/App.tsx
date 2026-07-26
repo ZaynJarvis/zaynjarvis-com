@@ -49,6 +49,28 @@ function useProjects() {
 
 function Arrow() { return <span className="arrow" aria-hidden="true">↗</span>; }
 
+const fallbackSocial: SocialLink[] = [
+  { label: 'Instagram', handle: 'zaynjarvis', url: 'https://www.instagram.com/zaynjarvis/' },
+  { label: 'X', handle: 'zaynjarvis', url: 'https://x.com/zaynjarvis' },
+  { label: 'LinkedIn', handle: 'zhihengliu', url: 'https://www.linkedin.com/in/zhihengliu' },
+  { label: 'GitHub', handle: 'ZaynJarvis', url: 'https://github.com/ZaynJarvis' },
+  { label: 'Discord', handle: 'zaynjarvis', url: 'https://discord.com/' },
+];
+const socialIcons: Record<string, { asset: string; mode: 'mask' | 'image' }> = {
+  instagram: { asset: '/social/instagram.svg', mode: 'mask' },
+  x: { asset: '/social/x.svg', mode: 'mask' },
+  linkedin: { asset: '/social/LI-In-Bug.png', mode: 'image' },
+  github: { asset: '/social/github.svg', mode: 'mask' },
+  discord: { asset: '/social/discord.svg', mode: 'mask' },
+};
+
+function SocialIcon({ label }: { label: string }) {
+  const source = socialIcons[label.toLowerCase()];
+  if (!source) return null;
+  if (source.mode === 'image') return <img className="social-icon social-icon--image" src={source.asset} alt="" aria-hidden="true" />;
+  return <span className="social-icon social-icon--mask" aria-hidden="true" style={{ '--social-icon': `url(${source.asset})` } as React.CSSProperties} />;
+}
+
 function ProjectLinks({ project, compact = false }: { project: ProjectRecord; compact?: boolean }) {
   return <div className={compact ? 'project-links compact' : 'project-links'}>
     {project.homepage && <a href={project.homepage} target="_blank" rel="noreferrer">Live site <Arrow /></a>}
@@ -58,6 +80,14 @@ function ProjectLinks({ project, compact = false }: { project: ProjectRecord; co
 
 function App() {
   const { data, error, retry } = useProjects();
+  const previewRef = React.useRef<HTMLImageElement>(null);
+  const [previewSlug, setPreviewSlug] = React.useState<string | null>(null);
+  const movePreview = (event: React.MouseEvent) => {
+    const el = previewRef.current;
+    if (!el) return;
+    const x = Math.min(event.clientX + 32, window.innerWidth - 340);
+    el.style.transform = `translate(${x}px, ${event.clientY - 110}px) rotate(-1.5deg)`;
+  };
   const visible = data?.projects.filter((project) => project.status !== 'hidden') ?? [];
   const current = visible.filter((project) => project.status === 'include' && project.recentWork === true);
   const archive = visible.filter((project) => project.status === 'optional' || (project.status === 'include' && !project.recentWork));
@@ -78,7 +108,6 @@ function App() {
         <h1 id="hero-title">Tools for agents that need context, coordination, and evidence.</h1>
         <p className="hero-lead">An index of the infrastructure, evaluation tools, and interfaces I build in the open — each entry linked to its source, with status and provenance kept visible.</p>
         <div className="hero-actions">
-          <a className="action-primary" href="https://canvas.zaynjarvis.com" target="_blank" rel="noreferrer">Trackpad Studio <span className="tag-new">New</span> <Arrow /></a>
           {openViking && <a href={openViking.githubUrl} target="_blank" rel="noreferrer">View OpenViking <Arrow /></a>}
           <a href="#index">Read the index ↓</a>
         </div>
@@ -116,7 +145,7 @@ function App() {
         </figure>
       </section>}
 
-      {data && <section className="ledger-section" id="index" aria-labelledby="index-title">
+      {data && <section className="ledger-section" id="index" aria-labelledby="index-title" onMouseMove={movePreview} onMouseLeave={() => setPreviewSlug(null)}>
         <div className="section-head">
           <p className="eyebrow">Index</p>
           <h2 id="index-title">Grouped by what each project enables.</h2>
@@ -127,10 +156,10 @@ function App() {
           return projects.length ? <section className="ledger-group" key={group} aria-labelledby={`cap-${group}`}>
             <h3 className="ledger-group-title" id={`cap-${group}`}>{group}<span>{String(projects.length).padStart(2, '0')}</span></h3>
             <ul className="ledger-rows">
-              {projects.map((project) => <li className="ledger-row" key={project.slug}>
+              {projects.map((project) => <li className="ledger-row" key={project.slug} onMouseEnter={() => setPreviewSlug(project.slug)}>
                 <span className="ledger-num" aria-hidden="true">{String(ordered.indexOf(project) + 1).padStart(2, '0')}</span>
                 <div className="ledger-main">
-                  <h4>{project.title}{project.slug === 'trackpad-studio' && <span className="tag-new">New</span>}</h4>
+                  <h4>{project.title}</h4>
                   <p>{project.signal || project.summary}</p>
                 </div>
                 <p className="ledger-meta">
@@ -143,6 +172,14 @@ function App() {
             </ul>
           </section> : null;
         })}
+        <img
+          ref={previewRef}
+          className={previewSlug ? 'ledger-preview visible' : 'ledger-preview'}
+          src={previewSlug ? `/previews/${previewSlug.toLowerCase()}.jpg` : undefined}
+          alt=""
+          aria-hidden="true"
+          onError={() => setPreviewSlug(null)}
+        />
       </section>}
 
       {archive.length > 0 && <section className="archive-section" aria-labelledby="archive-title">
@@ -173,8 +210,9 @@ function App() {
     <footer>
       <span>© {new Date().getFullYear()} ZaynJarvis</span>
       <span className="footer-links">
-        <a href="https://github.com/ZaynJarvis" target="_blank" rel="noreferrer">GitHub</a>
-        <a href="https://www.linkedin.com/in/zhihengliu" target="_blank" rel="noreferrer">LinkedIn</a>
+        {(data?.social?.length ? data.social : fallbackSocial).map((link) => link.url && (
+          <a key={link.label} href={link.url} target="_blank" rel="noreferrer"><SocialIcon label={link.label} />{link.label}</a>
+        ))}
         <a href="https://buymeacoffee.com/zaynjarvis?status=1" target="_blank" rel="noreferrer">Buy me a coffee</a>
       </span>
       <a href="#top">Back to top ↑</a>

@@ -25,7 +25,7 @@ const includeRepos = new Map([
     homepage: 'https://canvas.zaynjarvis.com',
     category: 'Native input playground',
     summary: 'macOS app that turns the trackpad into a pressure-aware multi-touch drawing canvas, with a guided tour of every signal the trackpad can produce.',
-    signal: 'New: the Mac trackpad as an instrument — absolute-position finger drawing, force ink, unified pinch+pan, and a gram-scale party trick.',
+    signal: 'The Mac trackpad as an instrument — absolute-position finger drawing, force ink, unified pinch+pan, and a gram-scale party trick.',
   }],
   ['zouk', { priority: 96, signal: 'The operating room where agents and people coordinate real work.' }],
   ['swarm-eval', {
