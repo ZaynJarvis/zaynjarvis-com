@@ -50,11 +50,16 @@ function useProjects() {
 type ExperienceEntry = { period: string; org: string; role: string; notes: string[] };
 const experience: ExperienceEntry[] = [
   {
-    period: '2021 – now', org: 'TikTok', role: 'Software Engineer III · Context Engineering · Singapore',
+    period: '2025 – now', org: 'VolcEngine', role: 'Software Engineer III · Context Engineering · Singapore',
     notes: [
       'Building OpenViking, an open-source context database for agent memory and knowledge, and leading a Singapore team of three on it.',
+    ],
+  },
+  {
+    period: '2021 – 2025', org: 'TikTok', role: 'Software Engineer III · VOD · Singapore',
+    notes: [
+      'Cut per-video storage cost by 90% (over 500 PB saved in one quarter) and led the VideoPlay strategy platform.',
       'Built an agent-based fault-attribution system for automated alarm analysis.',
-      'Before that on TikTok VOD: cut per-video storage cost by 90% (over 500 PB saved in one quarter) and led the VideoPlay strategy platform.',
     ],
   },
   {
@@ -123,14 +128,14 @@ function App() {
       <section className="hero" id="top" aria-labelledby="hero-title">
         <p className="eyebrow">Zhiheng Liu · Singapore</p>
         <h1 id="hero-title">Hi, I'm Zayn. I build tools that give AI agents context.</h1>
-        <p className="hero-lead">I'm a software engineer at TikTok, working on OpenViking, an open-source context database for agent memory and knowledge. Before that I worked on TikTok's video platform, and in 2019 I was the founding engineer of a legal-tech knowledge project. This site collects what I build in the open.</p>
+        <p className="hero-lead">I'm a software engineer at VolcEngine, working on OpenViking, an open-source context database for agent memory and knowledge. Before that I worked on TikTok's video platform, and in 2019 I was the founding engineer of a legal-tech knowledge project. This site collects what I build in the open.</p>
         <div className="hero-actions">
           <a href="https://resume.zaynjarvis.com" target="_blank" rel="noreferrer">Résumé <Arrow /></a>
           <a href="https://github.com/ZaynJarvis" target="_blank" rel="noreferrer">GitHub <Arrow /></a>
           <a href="#index">Projects ↓</a>
         </div>
         <dl className="colophon" aria-label="About me">
-          <div><dt>Now</dt><dd>OpenViking at TikTok</dd></div>
+          <div><dt>Now</dt><dd>OpenViking at VolcEngine</dd></div>
           <div><dt>Based in</dt><dd>Singapore</dd></div>
           <div><dt>Previously</dt><dd>TikTok VOD · KnowledgeDB</dd></div>
         </dl>
