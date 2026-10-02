@@ -4,11 +4,9 @@ import path from 'node:path';
 const root = process.cwd();
 
 const requiredAssets = [
-  'public/covers/zouk.png',
   'public/covers/notes.png',
   'public/covers/studio.png',
   'public/covers/openviking.png',
-  'public/covers/openclaw.png',
   'public/covers/aesthetics.png',
   'public/covers/registry-fallback.png',
   'public/favicon.png',

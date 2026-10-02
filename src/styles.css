@@ -110,7 +110,7 @@ footer {
 .header-link { color: var(--brand); }
 .site-header nav a:hover,
 .header-link:hover { color: var(--brand); text-decoration: underline; }
-.arrow { font-family: var(--serif); }
+.arrow { display: inline-block; width: 0.7em; height: 0.7em; margin-left: 0.15em; vertical-align: 0.02em; flex: none; }
 
 /* ---------- shared editorial pieces ---------- */
 

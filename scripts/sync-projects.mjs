@@ -64,11 +64,6 @@ const includeRepos = new Map([
     category: 'Technical publishing system',
     signal: 'A focused channel for making OpenViking architecture and agent runtime work legible.',
   }],
-  ['context-infrastructure', {
-    priority: 78,
-    category: 'Agent context infrastructure',
-    signal: 'Practical context, memory, and skill infrastructure for coding agents.',
-  }],
   ['aesthetics', { priority: 74, signal: 'A visual memory bank for making product and media taste inspectable.' }],
   ['skills', {
     priority: 72,
@@ -80,12 +75,6 @@ const includeRepos = new Map([
     priority: 70,
     category: 'Agent environment bridge',
     signal: 'A prototype bridge between cloud agents and trusted worker environments.',
-  }],
-  ['openclaw', {
-    priority: 42,
-    recentWork: false,
-    status: 'optional',
-    signal: 'A related assistant experiment kept as archive context, not current active work.',
   }],
   ['night-city', { priority: 40, signal: 'A style system packaged as a reusable product surface.' }],
   ['wanman', { priority: 36, status: 'hidden', signal: 'A control-room metaphor for multi-agent delegation.' }],
@@ -103,8 +92,6 @@ const categoryByRepo = {
   OpenViking: 'Context infrastructure',
   'hua-sheng-site': 'Business website system',
   'openviking-blog': 'Technical publishing system',
-  openclaw: 'Personal assistant system',
-  'context-infrastructure': 'Agent context infrastructure',
   aesthetics: 'Visual reference workbook',
   skills: 'Agent skill library',
   'agent-env-bridge': 'Agent environment bridge',
@@ -124,8 +111,6 @@ const titleByRepo = {
   OpenViking: 'OpenViking',
   'hua-sheng-site': 'HuaSheng Site',
   'openviking-blog': 'OpenViking Blog',
-  openclaw: 'OpenClaw',
-  'context-infrastructure': 'Context Infrastructure',
   aesthetics: 'Aesthetics Gallery',
   skills: 'Skills',
   'agent-env-bridge': 'Agent Environment Bridge',
@@ -145,8 +130,6 @@ const visualByRepo = {
   OpenViking: { accent: '#047857', secondary: '#0891b2' },
   'hua-sheng-site': { accent: '#b91c1c', secondary: '#d97706' },
   'openviking-blog': { accent: '#0f766e', secondary: '#4f46e5' },
-  openclaw: { accent: '#1d4ed8', secondary: '#0f766e' },
-  'context-infrastructure': { accent: '#4338ca', secondary: '#0891b2' },
   aesthetics: { accent: '#c2410c', secondary: '#9333ea' },
   skills: { accent: '#0369a1', secondary: '#0f766e' },
   'agent-env-bridge': { accent: '#0f766e', secondary: '#f59e0b' },
@@ -359,7 +342,8 @@ function isPlainObject(value) {
 
 async function main() {
   const repos = await gh(`https://api.github.com/users/${owner}/repos?per_page=100&type=public&sort=updated`);
-  const selected = repos.filter((repo) => includeRepos.has(repo.name));
+  // Only public repositories are listed; a repo made private drops out on the next sync.
+  const selected = repos.filter((repo) => includeRepos.has(repo.name) && !repo.private && repo.visibility !== 'private');
   const projects = [];
 
   for (const repo of selected) {

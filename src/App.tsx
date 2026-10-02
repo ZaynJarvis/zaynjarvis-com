@@ -13,8 +13,8 @@ type Capability = 'Context' | 'Coordination' | 'Evidence' | 'Interfaces';
 
 const capabilityOrder: Capability[] = ['Context', 'Coordination', 'Evidence', 'Interfaces'];
 const capabilities: Record<string, Capability> = {
-  OpenViking: 'Context', notes: 'Context', 'context-infrastructure': 'Context', 'tmux-journal': 'Context',
-  zouk: 'Coordination', openclaw: 'Coordination', 'swarm-eval': 'Evidence', termclip: 'Evidence',
+  OpenViking: 'Context', notes: 'Context', 'tmux-journal': 'Context',
+  'swarm-eval': 'Evidence', termclip: 'Evidence',
   studio: 'Interfaces', aesthetics: 'Interfaces', 'night-city': 'Interfaces', 'Flutter-Sign-in-Button': 'Interfaces',
   'trackpad-studio': 'Interfaces',
 };
@@ -67,7 +67,12 @@ const experience: ExperienceEntry[] = [
   },
 ];
 
-function Arrow() { return <span className="arrow" aria-hidden="true">↗</span>; }
+// Inline SVG instead of U+2197: iOS Safari falls back to the emoji glyph for that codepoint.
+function Arrow() {
+  return <svg className="arrow" viewBox="0 0 12 12" aria-hidden="true" focusable="false">
+    <path d="M3.5 8.5 8.5 3.5M4.5 3.5h4v4" fill="none" stroke="currentColor" strokeWidth="1.25" strokeLinecap="round" strokeLinejoin="round" />
+  </svg>;
+}
 
 const fallbackSocial: SocialLink[] = [
   { label: 'Instagram', handle: 'zaynjarvis', url: 'https://www.instagram.com/zaynjarvis/' },
