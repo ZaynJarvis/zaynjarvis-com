@@ -385,6 +385,31 @@ footer {
 }
 .archive-rows .arrow { color: var(--stone); }
 
+/* ---------- experience ---------- */
+
+.experience-section { border-top: 1px solid var(--border); padding-block: var(--section-gap); }
+.section-lead a { color: var(--brand); text-decoration-color: var(--sand); }
+.section-lead a:hover { text-decoration-color: currentColor; }
+.experience-rows { margin: 0; padding: 0; list-style: none; border-top: 1px solid var(--border-soft); }
+.experience-rows li {
+  display: grid;
+  grid-template-columns: minmax(0, 9rem) minmax(0, 1fr);
+  gap: 6px 24px;
+  border-bottom: 1px solid var(--border-soft);
+  padding: 18px 0;
+}
+.experience-period {
+  padding-top: 3px;
+  color: var(--stone);
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.06em;
+  font-variant-numeric: tabular-nums;
+}
+.experience-main h3 { margin: 0; font-size: 1.0625rem; line-height: 1.35; }
+.experience-main h3 span { display: block; margin-top: 2px; color: var(--olive); font-size: 0.9375rem; font-weight: 400; }
+.experience-main p { max-width: 68ch; margin: 8px 0 0; color: var(--warm); font-size: 0.9375rem; line-height: 1.55; }
+
 /* ---------- about ---------- */
 
 .about .lead { margin-top: 20px; padding-left: 19px; }
@@ -455,6 +480,7 @@ footer a:hover .social-icon--image { filter: none; }
   .colophon div { min-width: 40%; }
   .archive-rows a { grid-template-columns: minmax(0, 1fr) auto; }
   .archive-note { grid-column: 1 / -1; }
+  .experience-rows li { grid-template-columns: 1fr; }
   .support-line { margin-left: 0; }
   .about .lead,
   .section-lead { padding-left: 0; }

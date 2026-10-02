@@ -47,6 +47,26 @@ function useProjects() {
   return { data, error, retry: () => setAttempt((value) => value + 1) };
 }
 
+type ExperienceEntry = { period: string; org: string; role: string; notes: string[] };
+const experience: ExperienceEntry[] = [
+  {
+    period: '2021 – now', org: 'TikTok', role: 'Software Engineer III · Context Engineering · Singapore',
+    notes: [
+      'Building OpenViking, an open-source context database for agent memory and knowledge, and leading a Singapore team of three on it.',
+      'Built an agent-based fault-attribution system for automated alarm analysis.',
+      'Before that on TikTok VOD: cut per-video storage cost by 90% (over 500 PB saved in one quarter) and led the VideoPlay strategy platform.',
+    ],
+  },
+  {
+    period: '2019', org: 'KnowledgeDB', role: 'Founding engineer',
+    notes: ['Legal-tech knowledge project.'],
+  },
+  {
+    period: '2017 – 2021', org: 'Nanyang Technological University', role: 'B.Eng. Electrical and Electronic Engineering',
+    notes: ["Highest Distinction, GPA 4.92 / 5.00, Dean's List, full scholarship."],
+  },
+];
+
 function Arrow() { return <span className="arrow" aria-hidden="true">↗</span>; }
 
 const fallbackSocial: SocialLink[] = [
@@ -90,7 +110,7 @@ function App() {
     <a className="skip-link" href="#content">Skip to work</a>
     <header className="site-header">
       <a className="wordmark" href="#top" aria-label="ZaynJarvis, home">Zayn&nbsp;Jarvis</a>
-      <nav aria-label="Primary navigation"><a href="#focus">Focus</a><a href="#index">Index</a><a href="#about">About</a></nav>
+      <nav aria-label="Primary navigation"><a href="#focus">Focus</a><a href="#index">Index</a><a href="#experience">Experience</a><a href="#about">About</a></nav>
       <a className="header-link" href="https://github.com/ZaynJarvis" target="_blank" rel="noreferrer">GitHub <Arrow /></a>
     </header>
 
@@ -182,6 +202,23 @@ function App() {
           </li>)}
         </ul>
       </section>}
+
+      <section className="experience-section" id="experience" aria-labelledby="experience-title">
+        <div className="section-head section-head--compact">
+          <p className="eyebrow">Experience</p>
+          <h2 id="experience-title">Production systems first, open source now.</h2>
+          <p className="section-lead">The short version. The full résumé is at <a href="https://resume.zaynjarvis.com" target="_blank" rel="noreferrer">resume.zaynjarvis.com <Arrow /></a></p>
+        </div>
+        <ol className="experience-rows">
+          {experience.map((entry) => <li key={entry.org}>
+            <span className="experience-period">{entry.period}</span>
+            <div className="experience-main">
+              <h3>{entry.org}<span>{entry.role}</span></h3>
+              {entry.notes.map((note) => <p key={note}>{note}</p>)}
+            </div>
+          </li>)}
+        </ol>
+      </section>
 
       <section className="about" id="about" aria-labelledby="about-title">
         <p className="eyebrow">About this index</p>
