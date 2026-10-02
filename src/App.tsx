@@ -112,26 +112,27 @@ function App() {
   const ordered = capabilityOrder.flatMap((group) => current.filter((project) => capability(project) === group));
 
   return <>
-    <a className="skip-link" href="#content">Skip to work</a>
+    <a className="skip-link" href="#content">Skip to content</a>
     <header className="site-header">
       <a className="wordmark" href="#top" aria-label="ZaynJarvis, home">Zayn&nbsp;Jarvis</a>
-      <nav aria-label="Primary navigation"><a href="#focus">Focus</a><a href="#index">Index</a><a href="#experience">Experience</a><a href="#about">About</a></nav>
+      <nav aria-label="Primary navigation"><a href="#focus">Now</a><a href="#experience">Experience</a><a href="#index">Projects</a><a href="#about">Contact</a></nav>
       <a className="header-link" href="https://github.com/ZaynJarvis" target="_blank" rel="noreferrer">GitHub <Arrow /></a>
     </header>
 
     <main id="content">
       <section className="hero" id="top" aria-labelledby="hero-title">
-        <p className="eyebrow">Open source · agent infrastructure</p>
-        <h1 id="hero-title">Tools for agents that need context, coordination, and evidence.</h1>
-        <p className="hero-lead">An index of the infrastructure, evaluation tools, and interfaces I build in the open — each entry linked to its source, with status and provenance kept visible.</p>
+        <p className="eyebrow">Zhiheng Liu · Singapore</p>
+        <h1 id="hero-title">Hi, I'm Zayn. I build tools that give AI agents context.</h1>
+        <p className="hero-lead">I'm a software engineer at TikTok, working on OpenViking, an open-source context database for agent memory and knowledge. Before that I worked on TikTok's video platform, and in 2019 I was the founding engineer of a legal-tech knowledge project. This site collects what I build in the open.</p>
         <div className="hero-actions">
-          {openViking && <a href={openViking.githubUrl} target="_blank" rel="noreferrer">View OpenViking <Arrow /></a>}
-          <a href="#index">Read the index ↓</a>
+          <a href="https://resume.zaynjarvis.com" target="_blank" rel="noreferrer">Résumé <Arrow /></a>
+          <a href="https://github.com/ZaynJarvis" target="_blank" rel="noreferrer">GitHub <Arrow /></a>
+          <a href="#index">Projects ↓</a>
         </div>
-        <dl className="colophon" aria-label="Portfolio status">
-          <div><dt>Focus</dt><dd>OpenViking</dd></div>
-          <div><dt>Field</dt><dd>Context infrastructure</dd></div>
-          <div><dt>Current projects</dt><dd>{data ? current.length : '—'}</dd></div>
+        <dl className="colophon" aria-label="About me">
+          <div><dt>Now</dt><dd>OpenViking at TikTok</dd></div>
+          <div><dt>Based in</dt><dd>Singapore</dd></div>
+          <div><dt>Previously</dt><dd>TikTok VOD · KnowledgeDB</dd></div>
         </dl>
       </section>
 
@@ -162,11 +163,28 @@ function App() {
         </figure>
       </section>}
 
+      <section className="experience-section" id="experience" aria-labelledby="experience-title">
+        <div className="section-head section-head--compact">
+          <p className="eyebrow">Experience</p>
+          <h2 id="experience-title">Production systems first, open source now.</h2>
+          <p className="section-lead">The short version. The full résumé is at <a href="https://resume.zaynjarvis.com" target="_blank" rel="noreferrer">resume.zaynjarvis.com <Arrow /></a></p>
+        </div>
+        <ol className="experience-rows">
+          {experience.map((entry) => <li key={entry.org}>
+            <span className="experience-period">{entry.period}</span>
+            <div className="experience-main">
+              <h3>{entry.org}<span>{entry.role}</span></h3>
+              {entry.notes.map((note) => <p key={note}>{note}</p>)}
+            </div>
+          </li>)}
+        </ol>
+      </section>
+
       {data && <section className="ledger-section" id="index" aria-labelledby="index-title">
         <div className="section-head">
-          <p className="eyebrow">Index</p>
-          <h2 id="index-title">Grouped by what each project enables.</h2>
-          <p className="section-lead">Current work only. Capability labels are curated; activity and repository relationships follow the maintained project record.</p>
+          <p className="eyebrow">Projects</p>
+          <h2 id="index-title">Things I'm building in the open.</h2>
+          <p className="section-lead">Current work, grouped by what each project is for. Every entry links to its source.</p>
         </div>
         {capabilityOrder.map((group) => {
           const projects = current.filter((project) => capability(project) === group);
@@ -208,27 +226,10 @@ function App() {
         </ul>
       </section>}
 
-      <section className="experience-section" id="experience" aria-labelledby="experience-title">
-        <div className="section-head section-head--compact">
-          <p className="eyebrow">Experience</p>
-          <h2 id="experience-title">Production systems first, open source now.</h2>
-          <p className="section-lead">The short version. The full résumé is at <a href="https://resume.zaynjarvis.com" target="_blank" rel="noreferrer">resume.zaynjarvis.com <Arrow /></a></p>
-        </div>
-        <ol className="experience-rows">
-          {experience.map((entry) => <li key={entry.org}>
-            <span className="experience-period">{entry.period}</span>
-            <div className="experience-main">
-              <h3>{entry.org}<span>{entry.role}</span></h3>
-              {entry.notes.map((note) => <p key={note}>{note}</p>)}
-            </div>
-          </li>)}
-        </ol>
-      </section>
-
       <section className="about" id="about" aria-labelledby="about-title">
-        <p className="eyebrow">About this index</p>
-        <h2 id="about-title">Sources before claims.</h2>
-        <p className="lead">This portfolio groups ZaynJarvis repositories by capability and links each entry to its public source. Forks and inactive work are labelled rather than presented as original or current.</p>
+        <p className="eyebrow">Contact</p>
+        <h2 id="about-title">Say hi.</h2>
+        <p className="lead">X or LinkedIn is the quickest way to reach me; the links are below. The full résumé is at <a href="https://resume.zaynjarvis.com" target="_blank" rel="noreferrer">resume.zaynjarvis.com</a>.</p>
         <p className="support-line">If something here saved you time — <a href="https://buymeacoffee.com/zaynjarvis?status=1" target="_blank" rel="noreferrer">buy me a coffee ☕</a></p>
       </section>
     </main>

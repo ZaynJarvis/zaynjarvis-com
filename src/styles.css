@@ -172,7 +172,7 @@ footer {
 
 .hero { padding: clamp(48px, 8vw, 88px) 0 var(--section-gap); }
 .hero h1 {
-  max-width: 20ch;
+  max-width: 22ch;
   font-size: clamp(2.5rem, 5.4vw, 3.25rem);
   line-height: 1.12;
   letter-spacing: -0.015em;
@@ -413,6 +413,8 @@ footer {
 /* ---------- about ---------- */
 
 .about .lead { margin-top: 20px; padding-left: 19px; }
+.about .lead a { color: var(--brand); text-decoration-color: var(--sand); }
+.about .lead a:hover { text-decoration-color: currentColor; }
 .support-line {
   display: inline-block;
   margin: 28px 0 0 19px;
